@@ -2,10 +2,12 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const nunjucks = require("nunjucks");
+const cookieParser = require("cookie-parser");
 
 const { sequelize } = require("./models");
 const indexRouter = require("./routes");
 const usersRouter = require("./routes/users");
+const protectedRouter = require("./routes/protected");
 
 const app = express();
 app.set("port", process.env.PORT || 3001);
@@ -29,9 +31,11 @@ app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/protected", protectedRouter); // 보호된 라우트 추가
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

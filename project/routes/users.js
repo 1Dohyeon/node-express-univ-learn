@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const { generateToken } = require("../utils/jwt");
 const router = express.Router();
 
 // 회원가입
@@ -39,7 +40,8 @@ router.post("/login", async (req, res, next) => {
 
     const result = await bcrypt.compare(req.body.password, user.password);
     if (result) {
-      res.json({ success: true });
+      const token = generateToken(user);
+      res.json({ success: true, token });
     } else {
       res
         .status(400)

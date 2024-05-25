@@ -59,6 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
           if (data.success) {
             alert("로그인 성공");
+            localStorage.setItem("token", data.token); // 토큰을 로컬 스토리지에 저장
+            document.cookie = `token=${data.token};path=/`; // 토큰을 쿠키에 저장
             window.location.href = "/";
           } else {
             alert("로그인 실패: " + data.message);
