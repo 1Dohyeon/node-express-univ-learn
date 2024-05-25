@@ -4,22 +4,19 @@ module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        name: {
-          type: Sequelize.STRING(20),
+        email: {
+          type: Sequelize.STRING(100),
           allowNull: false,
           unique: true,
         },
-        age: {
-          type: Sequelize.INTEGER.UNSIGNED,
+        password: {
+          // 수정된 부분
+          type: Sequelize.STRING(100),
           allowNull: false,
         },
-        notice: {
-          type: Sequelize.BOOLEAN,
+        name: {
+          type: Sequelize.STRING(100),
           allowNull: false,
-        },
-        comment: {
-          type: Sequelize.TEXT,
-          allowNull: true,
         },
         created_at: {
           type: Sequelize.DATE,
@@ -33,14 +30,17 @@ module.exports = class User extends Sequelize.Model {
         underscored: false,
         modelName: "User",
         tableName: "users",
-        paranoid: false, // deletedAt 자동
+        paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
     );
   }
 
-  static associate(db) {
-    db.User.hasMany(db.Comment, { foreignKey: "commenter", sourceKey: "id" });
+  static associate(models) {
+    this.hasMany(models.SearchHistory, {
+      foreignKey: "searcher_id",
+      sourceKey: "id",
+    });
   }
 };

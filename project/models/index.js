@@ -1,14 +1,12 @@
-'use strict';
+const Sequelize = require("sequelize");
+const User = require("./user");
+const SearchHistory = require("./searchHistory");
 
-const Sequelize = require('sequelize');
-const User = require('./user');
-const Comment = require('./comment');
+const env = process.env.NODE_ENV || "development";
+const config = require("../config/config")[env];
+const models = {};
 
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config')[env];
-const db = {};
-
-// Sequelize 객체 생성 - mysql의 DB와 연결할 수 있는 객체
+// Sequelize 객체 생성 - MySQL의 DB와 연결할 수 있는 객체
 const sequelize = new Sequelize(
   config.database,
   config.username,
@@ -16,17 +14,16 @@ const sequelize = new Sequelize(
   config
 );
 
-db.sequelize = sequelize;
+models.sequelize = sequelize;
+models.User = User;
+models.SearchHistory = SearchHistory;
 
-db.User = User;
-db.Comment = Comment;
-
-// 모델 생성 ==> 모델에 해당하는 mysql table 생성
+// 모델 초기화
 User.init(sequelize);
-Comment.init(sequelize);
+SearchHistory.init(sequelize);
 
 // 두 모델간 관계 설정
-User.associate(db);
-Comment.associate(db);
+User.associate(models);
+SearchHistory.associate(models);
 
-module.exports = db;
+module.exports = models;
