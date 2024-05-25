@@ -1,43 +1,50 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const SearchHistory = require("../models/searchHistory");
-
 const router = express.Router();
 
-router
-  .route("/")
-  .get(async (req, res, next) => {
-    try {
-      const users = await User.findAll();
-      res.json(users);
-    } catch (err) {
-      console.error(err);
-      next(err);
-    }
-  })
-  .post(async (req, res, next) => {
-    try {
-      const user = await User.create({
-        name: req.body.name,
-        age: req.body.age,
-        notice: req.body.notice,
-      });
-      res.status(201).json(user);
-    } catch (err) {
-      console.error(err);
-      next(err);
-    }
-  });
-
-router.get("/:id/comments", async (req, res, next) => {
+// 회원가입
+router.post("/", async (req, res, next) => {
   try {
-    const searchHistory = await SearchHistory.findAll({
-      include: {
-        model: User,
-        where: { id: req.params.id },
-      },
+    const existingUser = await User.findOne({
+      where: { email: req.body.email },
     });
-    res.json(searchHistory);
+    if (existingUser) {
+      return res.status(400).json({ error: "이미 존재하는 이메일입니다." });
+    }
+
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const user = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: hash,
+    });
+    res.status(201).json(user);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// 로그인
+router.post("/login", async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { email: req.body.email } });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "사용자를 찾을 수 없습니다.",
+      });
+    }
+
+    const result = await bcrypt.compare(req.body.password, user.password);
+    if (result) {
+      res.json({ success: true });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "비밀번호가 일치하지 않습니다." });
+    }
   } catch (err) {
     console.error(err);
     next(err);

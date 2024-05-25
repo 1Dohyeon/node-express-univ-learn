@@ -16,18 +16,6 @@ nunjucks.configure("views", {
 });
 
 // DB와의 연결 확인
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log('데이터베이스 연결 성공!');
-//   })
-//   .catch((err) => {
-//     console.error('DB에 연결할 수 없음', err);
-//   });
-
-// sequelize.sync() : 모든 모델을 DB와 동기화
-// sync(): DB내 해당 모델의 table이 없는 경우만 새로 생성
-// sync({force:true}): DB내 기존 table을 drop후 새로 생성
 sequelize
   .sync({ force: false })
   .then(() => {
