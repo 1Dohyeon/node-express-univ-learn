@@ -1,23 +1,58 @@
 document.addEventListener("DOMContentLoaded", function () {
   const registerForm = document.getElementById("register-form");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const passwordConfirmInput = document.getElementById("password-confirm");
+  const passwordError = document.getElementById("password-error");
+  const emailError = document.createElement("div");
+  emailError.classList.add("error-message");
+  emailInput.parentNode.appendChild(emailError);
+
   if (registerForm) {
     registerForm.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      const formData = new FormData(registerForm);
-      const data = {
-        name: formData.get("name"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-      };
+      emailError.style.display = "none";
+      passwordError.style.display = "none";
 
-      fetch("/users", {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      const passwordConfirm = passwordConfirmInput.value;
+
+      fetch("/users/check-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ email }),
       })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.error);
+            });
+          }
+          if (password !== passwordConfirm) {
+            throw new Error("비밀번호가 같지 않습니다");
+          }
+          return Promise.resolve();
+        })
+        .then(() => {
+          const formData = new FormData(registerForm);
+          const data = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+            password: formData.get("password"),
+          };
+
+          return fetch("/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+        })
         .then((response) => {
           if (!response.ok) {
             return response.json().then((data) => {
@@ -31,8 +66,13 @@ document.addEventListener("DOMContentLoaded", function () {
           window.location.href = "/login";
         })
         .catch((error) => {
-          console.error("Error:", error);
-          alert("회원가입 실패: " + error.message);
+          if (error.message === "비밀번호가 같지 않습니다") {
+            passwordError.style.display = "block";
+            passwordError.textContent = error.message;
+          } else {
+            emailError.style.display = "block";
+            emailError.textContent = error.message;
+          }
         });
     });
   }
