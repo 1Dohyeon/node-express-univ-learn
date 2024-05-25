@@ -8,6 +8,10 @@ module.exports = class SearchHistory extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
+        place_code: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
         place: {
           type: Sequelize.STRING,
           allowNull: false,
