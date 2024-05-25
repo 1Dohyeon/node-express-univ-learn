@@ -100,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (data.success) {
             alert("로그인 성공");
             localStorage.setItem("token", data.token); // 토큰을 로컬 스토리지에 저장
+            localStorage.setItem("userId", data.user.id); // 사용자 ID를 로컬 스토리지에 저장
             document.cookie = `token=${data.token};path=/`; // 토큰을 쿠키에 저장
             window.location.href = "/";
           } else {
@@ -110,6 +111,17 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error("Error:", error);
           alert("로그인 실패");
         });
+    });
+  }
+
+  const logoutButton = document.getElementById("logout");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", function () {
+      localStorage.removeItem("token"); // 로컬 스토리지에서 토큰 삭제
+      localStorage.removeItem("userId"); // 로컬 스토리지에서 사용자 ID 삭제
+      document.cookie =
+        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // 쿠키에서 토큰 삭제
+      window.location.href = "/"; // 메인 페이지로 리다이렉트
     });
   }
 });
