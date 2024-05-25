@@ -14,7 +14,10 @@ router.post("/save", async (req, res) => {
     });
     res.status(201).json(searchHistory);
   } catch (error) {
-    res.status(500).json({ error: "검색 기록 저장 실패" });
+    console.error("검색 기록 저장 실패:", error);
+    res
+      .status(500)
+      .json({ error: "검색 기록 저장 실패", details: error.message });
   }
 });
 

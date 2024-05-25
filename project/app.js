@@ -9,6 +9,7 @@ const indexRouter = require("./routes");
 const usersRouter = require("./routes/users");
 const protectedRouter = require("./routes/protected");
 const apiRouter = require("./routes/tide.api");
+const searchHistoryRouter = require("./routes/searchHistory");
 
 const app = express();
 app.set("port", process.env.PORT || 3001);
@@ -36,8 +37,9 @@ app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/protected", protectedRouter); // 보호된 라우트 추가
+app.use("/protected", protectedRouter);
 app.use("/api", apiRouter);
+app.use("/searchHistory", searchHistoryRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
