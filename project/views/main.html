@@ -35,12 +35,14 @@
         font-weight: bolder;
         font-size: 18px;
       }
-      .header .logout-button,
-      .header .login-button,
-      .header .register-button {
-        font-size: 18px;
+      .logout-button {
+        padding: 5px 10px;
+        font-size: 16px;
         cursor: pointer;
-        margin-left: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
       }
       .input-group {
         display: flex;
@@ -48,12 +50,17 @@
         align-items: center;
         margin-bottom: 20px;
       }
+      .input-group select {
+        padding: 10px;
+        font-size: 16px;
+        margin: 5px;
+      }
       .input-group input {
         padding: 10px;
         font-size: 16px;
         margin: 5px;
       }
-      .input-group button {
+      .search-button {
         padding: 10px 20px;
         font-size: 16px;
         margin: 5px;
@@ -90,7 +97,8 @@
         justify-content: center;
         align-items: center;
       }
-      .login-register-prompt button {
+      .login-button,
+      .register-button {
         padding: 10px 20px;
         font-size: 16px;
         margin: 5px;
@@ -111,28 +119,41 @@
         <div>
           {% if user %}
           <button id="logout" class="logout-button">로그아웃</button>
-          {% else %}
-          <button onclick="location.href='/login'" class="login-button">
-            로그인
-          </button>
-          <button onclick="location.href='/register'" class="register-button">
-            회원가입
-          </button>
-          {% endif %}
+          {% else %} {% endif %}
         </div>
       </div>
 
       <div class="input-group">
-        <input type="text" placeholder="지역 이름" id="region" />
-        <input type="date" id="date" value="{{ today }}" />
-        <button id="search-button">검색</button>
+        <select id="place">
+          <option value="" selected disabled>위치 선택</option>
+          <option value="DT_0001">인천</option>
+          <option value="DT_0008">안산</option>
+          <option value="DT_0007">목포</option>
+        </select>
+        <input type="date" id="start-date" value="{{ today }}" />
+        <button class="search-button" onclick="getTph()">검색</button>
       </div>
 
-      <div class="search-results">검색 결과가 여기 표시됩니다.</div>
+      <div class="search-results">
+        <div class="information">
+          <div class="city_box">
+            <h1 id="city"></h1>
+          </div>
+          <div class="t_box">
+            <h3 id="t1"></h3>
+            <h3 id="t2"></h3>
+            <h3 id="t3"></h3>
+            <h3 id="t4"></h3>
+          </div>
+        </div>
+      </div>
       {% if user %}
       <div class="recent-searches">최근 검색 기록이 여기 표시됩니다.</div>
       {% else %}
-      <small>로그인을 통해 검색기록을 관리하고 추천 서비스를 받을 수 있습니다.</sㄴ>
+      <small
+        >로그인을 통해 검색기록을 관리하고 추천 서비스를 받을 수
+        있습니다.</small
+      >
       <div class="login-register-prompt">
         <button onclick="location.href='/login'" class="login-button">
           로그인
@@ -145,6 +166,7 @@
     </div>
 
     <script src="/user.front.js"></script>
+    <script src="/tide.api.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const logoutButton = document.getElementById("logout");
@@ -154,16 +176,6 @@
             document.cookie =
               "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // 쿠키에서 토큰 삭제
             window.location.href = "/"; // 메인 페이지로 리다이렉트
-          });
-        }
-
-        const searchButton = document.getElementById("search-button");
-        if (searchButton) {
-          searchButton.addEventListener("click", function () {
-            const region = document.getElementById("region").value;
-            const date = document.getElementById("date").value;
-            // 검색 로직을 여기에 추가
-            console.log(`Searching for region: ${region}, date: ${date}`);
           });
         }
       });

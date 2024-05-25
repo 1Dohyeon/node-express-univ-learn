@@ -3,24 +3,142 @@
   <head>
     <meta charset="UTF-8" />
     <title>회원가입</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+      }
+      .container {
+        width: 400px;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+      .form-group label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+      .form-group input {
+        width: calc(100% - 22px);
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #register-button {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      #get-login-page-button {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: rgb(180, 180, 180);
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+      .error-message {
+        font-size: 12px;
+        color: red;
+        display: none;
+      }
+      .divider {
+        position: relative;
+        margin: 20px 0;
+        border-bottom: 1px solid #ccc;
+        text-align: center;
+      }
+      .divider::before {
+        content: "이미 계정이 있다면";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #fff;
+        padding: 0 10px;
+        font-size: 12px;
+        color: #666;
+      }
+    </style>
   </head>
   <body>
-    <h1>회원가입</h1>
-    <form id="register-form">
-      <div>
-        <label for="name">이름:</label>
-        <input type="text" id="name" name="name" required />
+    <div class="container">
+      <h1>회원가입</h1>
+      <form id="register-form">
+        <div class="form-group">
+          <label for="name">이름:</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">이메일:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">비밀번호:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <div class="form-group">
+          <label for="password-confirm">비밀번호 확인:</label>
+          <input
+            type="password"
+            id="password-confirm"
+            name="password-confirm"
+            required
+          />
+          <div id="password-error" class="error-message">
+            비밀번호가 같지 않습니다
+          </div>
+        </div>
+        <div class="form-group">
+          <button id="register-button" type="submit">회원가입</button>
+        </div>
+      </form>
+      <div class="divider"></div>
+      <div class="form-group">
+        <button id="get-login-page-button" onclick="location.href='/login'">
+          로그인 페이지 바로가기
+        </button>
       </div>
-      <div>
-        <label for="email">이메일:</label>
-        <input type="email" id="email" name="email" required />
-      </div>
-      <div>
-        <label for="password">비밀번호:</label>
-        <input type="password" id="password" name="password" required />
-      </div>
-      <button type="submit">회원가입</button>
-    </form>
+    </div>
     <script src="/user.front.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const registerForm = document.getElementById("register-form");
+        const passwordInput = document.getElementById("password");
+        const passwordConfirmInput =
+          document.getElementById("password-confirm");
+        const passwordError = document.getElementById("password-error");
+
+        registerForm.addEventListener("submit", function (e) {
+          if (passwordInput.value !== passwordConfirmInput.value) {
+            e.preventDefault();
+            passwordError.style.display = "block";
+          } else {
+            passwordError.style.display = "none";
+          }
+        });
+      });
+    </script>
   </body>
 </html>
