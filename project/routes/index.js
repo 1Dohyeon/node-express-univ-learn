@@ -6,6 +6,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   const token = req.cookies.token;
   let user = null;
+  const today = new Date().toISOString().split("T")[0]; // 오늘 날짜를 ISO 형식으로 변환
 
   if (token) {
     try {
@@ -16,7 +17,7 @@ router.get("/", async (req, res) => {
     }
   }
 
-  res.render("main", { user });
+  res.render("main", { user, today });
 });
 
 router.get("/register", (req, res) => {

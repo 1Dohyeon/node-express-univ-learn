@@ -3,15 +3,147 @@
   <head>
     <meta charset="UTF-8" />
     <title>메인 페이지</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+      }
+      .container {
+        width: 768px;
+        height: 100%;
+        text-align: center;
+        background-color: #fff;
+        padding: 0px 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e9e9e9;
+        padding-bottom: 20px;
+      }
+      .header .user-info {
+        font-weight: bolder;
+        font-size: 18px;
+      }
+      .header .logout-button,
+      .header .login-button,
+      .header .register-button {
+        font-size: 18px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      .input-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .input-group input {
+        padding: 10px;
+        font-size: 16px;
+        margin: 5px;
+      }
+      .input-group button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+      .search-results {
+        width: 100%;
+        height: 300px;
+        background-color: #e9e9e9;
+        border-radius: 10px;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        margin-bottom: 20px;
+      }
+      .recent-searches {
+        width: 100%;
+        height: 150px;
+        background-color: #e9e9e9;
+        border-radius: 10px;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+      }
+      .login-register-prompt {
+        width: 100%;
+        box-sizing: border-box;
+        overflow-y: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .login-register-prompt button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+    </style>
   </head>
   <body>
-    {% if user %}
-    <h1>안녕하세요, {{ user.name }}님!</h1>
-    <button id="logout">로그아웃</button>
-    {% else %}
-    <button onclick="location.href='/register'">회원가입</button>
-    <button onclick="location.href='/login'">로그인</button>
-    {% endif %}
+    <div class="container">
+      <div class="header">
+        <div class="user-info">
+          {% if user %} {{ user.name }} {% else %} 비회원 {% endif %}
+        </div>
+        <div>
+          {% if user %}
+          <button id="logout" class="logout-button">로그아웃</button>
+          {% else %}
+          <button onclick="location.href='/login'" class="login-button">
+            로그인
+          </button>
+          <button onclick="location.href='/register'" class="register-button">
+            회원가입
+          </button>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="input-group">
+        <input type="text" placeholder="지역 이름" id="region" />
+        <input type="date" id="date" value="{{ today }}" />
+        <button id="search-button">검색</button>
+      </div>
+
+      <div class="search-results">검색 결과가 여기 표시됩니다.</div>
+      {% if user %}
+      <div class="recent-searches">최근 검색 기록이 여기 표시됩니다.</div>
+      {% else %}
+      <small>로그인을 통해 검색기록을 관리하고 추천 서비스를 받을 수 있습니다.</sㄴ>
+      <div class="login-register-prompt">
+        <button onclick="location.href='/login'" class="login-button">
+          로그인
+        </button>
+        <button onclick="location.href='/register'" class="register-button">
+          회원가입
+        </button>
+      </div>
+      {% endif %}
+    </div>
+
     <script src="/user.front.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -22,6 +154,16 @@
             document.cookie =
               "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // 쿠키에서 토큰 삭제
             window.location.href = "/"; // 메인 페이지로 리다이렉트
+          });
+        }
+
+        const searchButton = document.getElementById("search-button");
+        if (searchButton) {
+          searchButton.addEventListener("click", function () {
+            const region = document.getElementById("region").value;
+            const date = document.getElementById("date").value;
+            // 검색 로직을 여기에 추가
+            console.log(`Searching for region: ${region}, date: ${date}`);
           });
         }
       });
