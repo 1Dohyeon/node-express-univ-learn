@@ -2,10 +2,12 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const nunjucks = require("nunjucks");
+const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
 const { sequelize } = require("./models");
 const indexRouter = require("./routes");
+const authRouter = require("./routes/auth");
 const usersRouter = require("./routes/users");
 const protectedRouter = require("./routes/protected");
 const apiRouter = require("./routes/tide.api");
@@ -18,6 +20,16 @@ nunjucks.configure("views", {
   express: app,
   watch: true,
 });
+
+// 세션 미들웨어 설정
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // 개발 환경에서는 false, 배포 환경에서는 true로 설정
+  })
+);
 
 // DB와의 연결 확인
 sequelize
@@ -37,6 +49,7 @@ app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/auth", authRouter);
 app.use("/protected", protectedRouter);
 app.use("/api", apiRouter);
 app.use("/searchHistory", searchHistoryRouter);

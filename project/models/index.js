@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const User = require("./user");
 const SearchHistory = require("./searchHistory");
+const KakaoUser = require("./kakaoUser");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -17,13 +18,16 @@ const sequelize = new Sequelize(
 models.sequelize = sequelize;
 models.User = User;
 models.SearchHistory = SearchHistory;
+models.KakaoUser = KakaoUser;
 
 // 모델 초기화
 User.init(sequelize);
 SearchHistory.init(sequelize);
+KakaoUser.init(sequelize);
 
 // 두 모델간 관계 설정
 User.associate(models);
 SearchHistory.associate(models);
+KakaoUser.associate(models);
 
 module.exports = models;

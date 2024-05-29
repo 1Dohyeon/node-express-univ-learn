@@ -137,12 +137,13 @@
     <div class="container">
       <div class="header">
         <div class="user-info">
-          {% if user %} {{ user.name }} {% else %} 비회원 {% endif %}
+          {% if user %} {{ user.name }} {% elif kakaoUser %} {{ kakaoUser.name
+          }} {% else %} 비회원 {% endif %}
         </div>
         <div>
-          {% if user %}
+          {% if user or kakaoUser %}
           <button id="logout" class="logout-button">로그아웃</button>
-          {% else %} {% endif %}
+          {% endif %}
         </div>
       </div>
 
@@ -170,13 +171,12 @@
           </div>
         </div>
       </div>
-      {% if user %}
+      {% if user or kakaoUser %}
       <div class="recent-searches">최근 검색 기록이 여기 표시됩니다.</div>
       {% else %}
-      <small
-        >로그인을 통해 검색기록을 관리하고 추천 서비스를 받을 수
-        있습니다.</small
-      >
+      <small>
+        로그인을 통해 검색기록을 관리하고 추천 서비스를 받을 수 있습니다.
+      </small>
       <div class="login-register-prompt">
         <button onclick="location.href='/login'" class="login-button">
           로그인

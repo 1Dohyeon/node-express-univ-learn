@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const emailError = document.createElement("div");
   emailError.classList.add("error-message");
   emailInput.parentNode.appendChild(emailError);
+  const kakaoLoginBtn = document.getElementById("kakaoLogin-button");
 
   if (registerForm) {
     registerForm.addEventListener("submit", function (event) {
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const password = passwordInput.value;
       const passwordConfirm = passwordConfirmInput.value;
 
-      fetch("/users/check-email", {
+      fetch("/auth/check-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             password: formData.get("password"),
           };
 
-          return fetch("/users", {
+          return fetch("/auth/register", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -88,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         password: formData.get("password"),
       };
 
-      fetch("/users/login", {
+      fetch("/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,6 +123,12 @@ document.addEventListener("DOMContentLoaded", function () {
       document.cookie =
         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // 쿠키에서 토큰 삭제
       window.location.href = "/"; // 메인 페이지로 리다이렉트
+    });
+  }
+
+  if (kakaoLoginBtn) {
+    kakaoLoginBtn.addEventListener("click", function () {
+      window.location.href = "/auth/kakao/start";
     });
   }
 });

@@ -5,7 +5,7 @@ module.exports = class SearchHistory extends Sequelize.Model {
     return super.init(
       {
         searcher_id: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.BIGINT,
           allowNull: false,
         },
         place_code: {
@@ -37,5 +37,9 @@ module.exports = class SearchHistory extends Sequelize.Model {
 
   static associate(models) {
     this.belongsTo(models.User, { foreignKey: "searcher_id", targetKey: "id" });
+    this.belongsTo(models.KakaoUser, {
+      foreignKey: "searcher_id",
+      targetKey: "id",
+    });
   }
 };
