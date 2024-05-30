@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const emailError = document.createElement("div");
   emailError.classList.add("error-message");
   emailInput.parentNode.appendChild(emailError);
-  const kakaoLoginBtn = document.getElementById("kakaoLogin-button");
 
   if (registerForm) {
     registerForm.addEventListener("submit", function (event) {
@@ -101,6 +100,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  const kakaoLoginBtn = document.getElementById("kakaoLogin-button");
+  if (kakaoLoginBtn) {
+    kakaoLoginBtn.addEventListener("click", function () {
+      window.location.href = "/auth/kakao/start";
+    });
+  }
+
   const logoutButton = document.getElementById("logout");
   if (logoutButton) {
     logoutButton.addEventListener("click", function () {
@@ -109,12 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
       document.cookie =
         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // 쿠키에서 토큰 삭제
       window.location.href = "/"; // 메인 페이지로 리다이렉트
-    });
-  }
-
-  if (kakaoLoginBtn) {
-    kakaoLoginBtn.addEventListener("click", function () {
-      window.location.href = "/auth/kakao/start";
     });
   }
 });

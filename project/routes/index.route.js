@@ -1,12 +1,19 @@
 const express = require("express");
 const { verifyToken } = require("../utils/jwt");
 const User = require("../models/user");
+const { KakaoUser } = require("../models/kakaoUser");
+const { decode } = require("jsonwebtoken");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const token = req.cookies.token;
   let user = null;
+  let kakaoUser = null;
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜를 ISO 형식으로 변환
+
+  if (req.session.kakaoUser && req.session.kakaoUser.k === "kakao") {
+    kakaoUser = req.session.kakaoUser;
+  }
 
   if (token) {
     try {
@@ -17,7 +24,7 @@ router.get("/", async (req, res) => {
     }
   }
 
-  res.render("main", { user, today });
+  res.render("main", { user, kakaoUser, today });
 });
 
 router.get("/register", (req, res) => {

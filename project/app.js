@@ -78,6 +78,11 @@ app.use((err, req, res, next) => {
   res.render("error");
 });
 
+app.get("/", (req, res) => {
+  const { user, kakaoUser } = req.session;
+  res.render("main", { user, kakaoUser });
+});
+
 app.listen(app.get("port"), () => {
   console.log(`http://localhost:${app.get("port")} 번 포트에서 대기 중`);
 });
