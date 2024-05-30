@@ -1,8 +1,4 @@
 const express = require("express");
-const { KakaoUser } = require("../models");
-const { User } = require("../models");
-const jwt = require("jsonwebtoken");
-const fetch = require("node-fetch");
 const { checkEmail, createUser, login } = require("../service/auth.service");
 const {
   startKakaoLogin,
