@@ -75,7 +75,7 @@ async function finishKakaoLogin(finalUrl, req, res) {
 
     // 세션에 데이터 저장
     req.session.kakaoUser = {
-      k: "kakao",
+      way: "kakao",
       id: user.id,
       name: user.name,
       token: token,

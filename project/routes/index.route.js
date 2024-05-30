@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
   let kakaoUser = null;
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜를 ISO 형식으로 변환
 
-  if (req.session.kakaoUser && req.session.kakaoUser.k === "kakao") {
+  if (req.session.kakaoUser && req.session.kakaoUser.way === "kakao") {
     kakaoUser = req.session.kakaoUser;
   }
 

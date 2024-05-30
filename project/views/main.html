@@ -147,47 +147,7 @@
           {% endif %}
         </div>
       </div>
-
-      <div class="input-group">
-        <select id="place">
-          <option value="" selected disabled>위치 선택</option>
-          <option value="DT_0001">인천</option>
-          <option value="DT_0008">안산</option>
-          <option value="DT_0007">목포</option>
-        </select>
-        <input type="date" id="start-date" value="{{ today }}" />
-        <button class="search-button" onclick="getTph()">검색</button>
-      </div>
-
-      <div class="search-results">
-        <div class="information">
-          <div class="city_box">
-            <h1 id="city"></h1>
-          </div>
-          <div class="t_box">
-            <h3 id="t1"></h3>
-            <h3 id="t2"></h3>
-            <h3 id="t3"></h3>
-            <h3 id="t4"></h3>
-          </div>
-        </div>
-      </div>
-      {% if user or kakaoUser %}
-      <div class="recent-searches">최근 검색 기록이 여기 표시됩니다.</div>
-      {% else %}
-      <small>
-        로그인을 통해 검색기록을 관리하고 추천 서비스를 받을 수 있습니다.
-      </small>
-      <div class="login-register-prompt">
-        <button onclick="location.href='/login'" class="login-button">
-          로그인
-        </button>
-        <button onclick="location.href='/register'" class="register-button">
-          회원가입
-        </button>
-      </div>
-      {% endif %}
-    </div>
+      {% include "tide.html" %}
 
     <script src="/user.front.js"></script>
     <script src="/searchHistory.front.js"></script>
@@ -195,6 +155,34 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const logoutButton = document.getElementById("logout");
+        const userInfo = document.getElementById("user-info");
+        const loginPrompt = document.getElementById("login-prompt");
+        const loginRegisterPrompt = document.getElementById("login-register-prompt");
+
+        // 세션 정보를 확인하고 사용자 정보를 업데이트
+        fetch("/auth/session")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.user) {
+              userInfo.textContent = data.user.name;
+              logoutButton.style.display = "block";
+              loginPrompt.style.display = "none";
+              loginRegisterPrompt.style.display = "none";
+            } else {
+              userInfo.textContent = "비회원";
+              logoutButton.style.display = "none";
+              loginPrompt.style.display = "block";
+              loginRegisterPrompt.style.display = "flex";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching session info:", error);
+            userInfo.textContent = "비회원";
+            logoutButton.style.display = "none";
+            loginPrompt.style.display = "block";
+            loginRegisterPrompt.style.display = "flex";
+          });
+
         if (logoutButton) {
           logoutButton.addEventListener("click", function () {
             fetch("/auth/logout", {
