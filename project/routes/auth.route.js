@@ -62,4 +62,14 @@ router.get("/kakao/finish", async (req, res) => {
   await finishKakaoLogin(finalUrl, req, res);
 });
 
+router.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: "로그아웃 실패" });
+    }
+    res.clearCookie("token"); // 쿠키 삭제
+    res.json({ success: true, message: "로그아웃 성공" });
+  });
+});
+
 module.exports = router;
