@@ -16,44 +16,30 @@ document.addEventListener("DOMContentLoaded", function () {
       emailError.style.display = "none";
       passwordError.style.display = "none";
 
+      const name = document.getElementById("name").value;
       const email = emailInput.value;
       const password = passwordInput.value;
       const passwordConfirm = passwordConfirmInput.value;
 
-      fetch("/auth/check-email", {
+      if (password !== passwordConfirm) {
+        passwordError.style.display = "block";
+        passwordError.textContent = "비밀번호가 같지 않습니다";
+        return;
+      }
+
+      const data = {
+        name,
+        email,
+        password,
+      };
+
+      fetch("/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify(data),
       })
-        .then((response) => {
-          if (!response.ok) {
-            return response.json().then((data) => {
-              throw new Error(data.error);
-            });
-          }
-          if (password !== passwordConfirm) {
-            throw new Error("비밀번호가 같지 않습니다");
-          }
-          return Promise.resolve();
-        })
-        .then(() => {
-          const formData = new FormData(registerForm);
-          const data = {
-            name: formData.get("name"),
-            email: formData.get("email"),
-            password: formData.get("password"),
-          };
-
-          return fetch("/auth/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        })
         .then((response) => {
           if (!response.ok) {
             return response.json().then((data) => {
@@ -67,12 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
           window.location.href = "/login";
         })
         .catch((error) => {
-          if (error.message === "비밀번호가 같지 않습니다") {
-            passwordError.style.display = "block";
-            passwordError.textContent = error.message;
-          } else {
+          if (error.message === "이미 존재하는 이메일입니다.") {
             emailError.style.display = "block";
             emailError.textContent = error.message;
+          } else {
+            passwordError.style.display = "block";
+            passwordError.textContent = error.message;
           }
         });
     });

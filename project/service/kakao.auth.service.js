@@ -1,56 +1,22 @@
-const express = require("express");
 const { KakaoUser } = require("../models");
-const { User } = require("../models");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fetch = require("node-fetch");
 
-const router = express.Router();
+function startKakaoLogin(req, res) {
+  const baseUrl = "https://kauth.kakao.com/oauth/authorize";
+  const config = {
+    client_id: process.env.KAKAO_API_KEY,
+    redirect_uri: process.env.CODE_REDIRECT_URI,
+    response_type: "code",
+  };
+  const params = new URLSearchParams(config).toString();
 
-// 이메일 중복 확인
-router.post("/check-email", async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ where: { email } });
-  if (user) {
-    return res.status(400).json({ error: "이미 존재하는 이메일입니다." });
-  }
-  return res.status(200).json({ message: "사용 가능한 이메일입니다." });
-});
+  const finalUrl = `${baseUrl}?${params}`;
+  console.log("Generated URL:", finalUrl);
+  return finalUrl;
+}
 
-// 회원가입
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    const user = await User.create({
-      name,
-      email,
-      password: bcrypt.hashSync(password, 10),
-    });
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// 로그인
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ where: { email } });
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ success: false, message: "로그인 실패" });
-  }
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
-  res.json({ success: true, token, user: { id: user.id, name: user.name } });
-});
-
-// 카카오 로그인 시작
-router.get("/kakao/start", (req, res) => {
-  const url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_API_KEY}&redirect_uri=${process.env.CODE_REDIRECT_URI}`;
-  res.redirect(url);
-});
-// 카카오 로그인 완료
-router.get("/kakao/finish", async (req, res) => {
+function getKakaoUrl(req) {
   const baseUrl = "https://kauth.kakao.com/oauth/token";
   const config = {
     client_id: process.env.KAKAO_API_KEY,
@@ -61,7 +27,11 @@ router.get("/kakao/finish", async (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
+  console.log("Generated Kakao URL:", finalUrl);
+  return finalUrl;
+}
 
+async function finishKakaoLogin(finalUrl, req, res) {
   try {
     const kakaoTokenRequest = await fetch(finalUrl, {
       method: "POST",
@@ -69,6 +39,8 @@ router.get("/kakao/finish", async (req, res) => {
         "Content-type": "application/json",
       },
     }).then((response) => response.json());
+
+    console.log("Kakao Token Request Response:", kakaoTokenRequest);
 
     if ("access_token" in kakaoTokenRequest) {
       const { access_token } = kakaoTokenRequest;
@@ -78,6 +50,8 @@ router.get("/kakao/finish", async (req, res) => {
           "Content-type": "application/json",
         },
       }).then((response) => response.json());
+
+      console.log("User Request Response:", userRequest);
 
       const {
         id,
@@ -93,6 +67,14 @@ router.get("/kakao/finish", async (req, res) => {
       const token = jwt.sign({ id: kakaoUserInfo.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
+
+      // 사용자 정보와 토큰을 로그에 출력
+      console.log("Kakao User Info:", {
+        id: kakaoUserInfo.id,
+        name: kakaoUserInfo.name,
+        token: token,
+      });
+
       // 세션에 데이터 저장
       req.session.kakaoUser = {
         id: kakaoUserInfo.id,
@@ -100,18 +82,22 @@ router.get("/kakao/finish", async (req, res) => {
         token: token,
       };
 
-      res.json({
-        id: kakaoUserInfo.id,
-        name: kakaoUserInfo.name,
-        token: token,
+      // JWT 토큰을 쿠키에 저장
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // 환경에 따라 secure 설정
+        maxAge: 3600000, // 1시간
       });
+
+      res.redirect("/");
     } else {
+      console.error("Kakao token request failed:", kakaoTokenRequest);
       res.status(401).json({ success: false, message: "카카오 로그인 실패" });
     }
   } catch (error) {
     console.error("Error during Kakao login:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
-});
+}
 
-module.exports = router;
+module.exports = { startKakaoLogin, getKakaoUrl, finishKakaoLogin };

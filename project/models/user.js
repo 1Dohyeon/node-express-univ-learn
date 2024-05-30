@@ -8,6 +8,7 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.DataTypes.BIGINT,
           primaryKey: true,
           allowNull: false,
+          autoIncrement: true,
         },
         email: {
           type: Sequelize.STRING(100),

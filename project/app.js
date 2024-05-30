@@ -1,19 +1,26 @@
+// 라이브러리 설정
 const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const nunjucks = require("nunjucks");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-
-const { sequelize } = require("./models");
-const indexRouter = require("./routes");
-const authRouter = require("./routes/auth");
-const usersRouter = require("./routes/users");
-const protectedRouter = require("./routes/protected");
-const apiRouter = require("./routes/tide.api");
-const searchHistoryRouter = require("./routes/searchHistory");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 const app = express();
+
+// model 설정
+const { sequelize } = require("./models");
+
+// 각 라우터 설정
+const indexRouter = require("./routes/index.route");
+const authRouter = require("./routes/auth.route");
+const usersRouter = require("./routes/users.route");
+const protectedRouter = require("./routes/protected.route");
+const apiRouter = require("./routes/tide.api.route");
+const searchHistoryRouter = require("./routes/searchHistory.route");
+
+// 포트번호 및 뷰 엔진 설정
 app.set("port", process.env.PORT || 3001);
 app.set("view engine", "html");
 nunjucks.configure("views", {
@@ -27,6 +34,9 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    store: new SequelizeStore({
+      db: sequelize,
+    }),
     cookie: { secure: false }, // 개발 환경에서는 false, 배포 환경에서는 true로 설정
   })
 );
@@ -47,6 +57,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// 라우터 엔드포인트 설정
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
