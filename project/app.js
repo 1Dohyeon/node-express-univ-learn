@@ -10,7 +10,7 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const app = express();
 
 // model 설정
-const { sequelize } = require("./models");
+const { sequelize, User, KakaoUser, Post, Comment } = require("./models");
 
 // 각 라우터 설정
 const indexRouter = require("./routes/index.route");
@@ -19,6 +19,8 @@ const usersRouter = require("./routes/users.route");
 const protectedRouter = require("./routes/protected.route");
 const apiRouter = require("./routes/tide.api.route");
 const searchHistoryRouter = require("./routes/searchHistory.route");
+const postRouter = require("./routes/post.route");
+const commentRouter = require("./routes/comment.route");
 
 // 포트번호 및 뷰 엔진 설정
 app.set("port", process.env.PORT || 3001);
@@ -61,9 +63,8 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
-app.use("/protected", protectedRouter);
-app.use("/api", apiRouter);
-app.use("/searchHistory", searchHistoryRouter);
+app.use("/posts", postRouter);
+app.use("/comments", commentRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
@@ -81,6 +82,10 @@ app.use((err, req, res, next) => {
 app.get("/", (req, res) => {
   const { user, kakaoUser } = req.session;
   res.render("main", { user, kakaoUser });
+});
+
+app.get("/users/mypage", (req, res) => {
+  res.render("myPage");
 });
 
 app.listen(app.get("port"), () => {

@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-module.exports = class KakaoUser extends Sequelize.Model {
+module.exports = class Comment extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -8,23 +8,24 @@ module.exports = class KakaoUser extends Sequelize.Model {
           type: Sequelize.DataTypes.BIGINT,
           primaryKey: true,
           allowNull: false,
+          autoIncrement: true,
         },
-        name: {
-          type: Sequelize.STRING(100),
+        content: {
+          type: Sequelize.TEXT,
           allowNull: false,
         },
-        location: {
-          type: Sequelize.STRING(100),
-          allowNull: true,
-          defaultValue: "서울 중구",
+        createdAt: {
+          type: Sequelize.DATE,
+          allowNull: false,
+          defaultValue: Sequelize.NOW,
         },
       },
       {
         sequelize,
         timestamps: false,
         underscored: false,
-        modelName: "KakaoUser",
-        tableName: "kakao_users",
+        modelName: "Comment",
+        tableName: "comments",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -33,10 +34,11 @@ module.exports = class KakaoUser extends Sequelize.Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Post, { foreignKey: "kakaoUserId", sourceKey: "id" });
-    this.hasMany(models.Comment, {
+    this.belongsTo(models.User, { foreignKey: "userId", targetKey: "id" });
+    this.belongsTo(models.KakaoUser, {
       foreignKey: "kakaoUserId",
-      sourceKey: "id",
+      targetKey: "id",
     });
+    this.belongsTo(models.Post, { foreignKey: "postId", targetKey: "id" });
   }
 };

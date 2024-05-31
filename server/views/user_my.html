@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Page</title>
+    <style>
+      .post {
+        cursor: pointer; /* 커서를 포인터로 변경 */
+        padding: 10px;
+        transition: background-color 0.3s ease;
+      }
+
+      .post:hover {
+        background-color: #f0f0f0; /* 배경색 변경 */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My Page</h1>
+    <form id="userForm" data-user-id="{{ user.id }}" method="post">
+      <label for="name">Name:</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value="{{ user.name }}"
+        required
+      />
+      <br />
+      <label for="nickname">Nickname:</label>
+      <input
+        type="text"
+        id="nickname"
+        name="nickname"
+        value="{{ user.nickname }}"
+        required
+      />
+      <br />
+      <label for="location">Location:</label>
+      <input
+        type="text"
+        id="location"
+        name="location"
+        value="{{ user.location }}"
+        required
+      />
+      <br />
+      <button type="submit">Update</button>
+    </form>
+    <a href="/">Main Page</a>
+    <hr />
+    <h2>My Posts</h2>
+    <div id="posts">
+      {% if posts.length > 0 %}
+      <div>
+        {% for post in posts %}
+        <div class="post" data-post-id="{{ post.id }}">
+          <h3>{{ post.title | truncate(20, true, '...') }}</h3>
+          <p>{{ post.content | truncate(20, true, '...') }}</p>
+          <p>Posted by: {{ user.nickname }}</p>
+          <hr />
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p>You have not written any posts yet.</p>
+      {% endif %}
+    </div>
+
+    <script src="/client/posts.client.js"></script>
+  </body>
+</html>

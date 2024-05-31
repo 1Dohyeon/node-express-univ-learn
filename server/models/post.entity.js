@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-module.exports = class User extends Sequelize.Model {
+module.exports = class Post extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -10,23 +10,17 @@ module.exports = class User extends Sequelize.Model {
           allowNull: false,
           autoIncrement: true,
         },
-        email: {
-          type: Sequelize.STRING(100),
-          allowNull: false,
-          unique: true,
-        },
-        password: {
-          type: Sequelize.STRING(100),
+        title: {
+          type: Sequelize.STRING(200),
           allowNull: false,
         },
-        name: {
-          type: Sequelize.STRING(100),
+        content: {
+          type: Sequelize.TEXT,
           allowNull: false,
         },
         location: {
           type: Sequelize.STRING(100),
-          allowNull: true,
-          defaultValue: "서울 중구",
+          allowNull: false,
         },
         createdAt: {
           type: Sequelize.DATE,
@@ -38,8 +32,8 @@ module.exports = class User extends Sequelize.Model {
         sequelize,
         timestamps: false,
         underscored: false,
-        modelName: "User",
-        tableName: "users",
+        modelName: "Post",
+        tableName: "posts",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -48,7 +42,7 @@ module.exports = class User extends Sequelize.Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Post, { foreignKey: "userId", sourceKey: "id" });
-    this.hasMany(models.Comment, { foreignKey: "userId", sourceKey: "id" });
+    this.belongsTo(models.User, { foreignKey: "userId", targetKey: "id" });
+    this.hasMany(models.Comment, { foreignKey: "postId", sourceKey: "id" });
   }
 };
