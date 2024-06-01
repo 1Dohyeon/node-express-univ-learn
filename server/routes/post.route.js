@@ -34,6 +34,49 @@ router.post("/create", isAuthenticated, async (req, res) => {
   }
 });
 
+// 게시글 수정 페이지
+router.get("/edit/:id", isAuthenticated, async (req, res) => {
+  try {
+    const post = await postService.getPostById(req.params.id);
+    if (post.User.id !== req.user.id) {
+      return res.redirect(`/posts/${req.params.id}`);
+    }
+    res.render("post_edit.html", { post });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+// 게시글 수정
+router.post("/edit/:id", isAuthenticated, async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const post = await postService.getPostById(req.params.id);
+    console.log(post.User.id);
+    if (post.User.id !== req.user.id) {
+      return res.redirect(`/posts/${req.params.id}`);
+    }
+    await postService.updatePost(req.params.id, title, content);
+    res.redirect(`/posts/${req.params.id}`);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+// 게시글 삭제
+router.post("/delete/:id", isAuthenticated, async (req, res) => {
+  try {
+    const post = await postService.getPostById(req.params.id);
+    if (post.User.id !== req.user.id) {
+      return res.redirect(`/posts/${req.params.id}`);
+    }
+    await postService.deletePost(req.params.id);
+    res.redirect("/posts");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 // 게시글 목록 조회 및 렌더링
 router.get("/", async (req, res) => {
   try {
@@ -53,7 +96,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const post = await postService.getPostById(req.params.id);
-    res.render("post.html", { post });
+    res.render("post.html", { post, user: req.user });
   } catch (err) {
     res.status(500).send(err.message);
   }

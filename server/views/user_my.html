@@ -58,7 +58,7 @@
         <div class="post" data-post-id="{{ post.id }}">
           <h3>{{ post.title | truncate(20, true, '...') }}</h3>
           <p>{{ post.content | truncate(20, true, '...') }}</p>
-          <p>Posted by: {{ user.nickname }}</p>
+          <p>Posted by: {{ post.User.nickname }}</p>
           <hr />
         </div>
         {% endfor %}
