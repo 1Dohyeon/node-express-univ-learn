@@ -22,7 +22,17 @@ router.get("/my", isAuthenticated, async (req, res) => {
     res.status(500).send(err.message);
   }
 });
-router.put("/my", isAuthenticated, userService.updateUser);
+
+// 사용자 정보 업데이트
+router.put("/my", isAuthenticated, async (req, res) => {
+  try {
+    const { name, nickname, location } = req.body;
+    await userService.updateUser(req.user.id, { name, nickname, location });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
 
 // 사용자 기본 정보 조회
 router.get("/:id", userService.getUserProfile);

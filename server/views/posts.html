@@ -3,47 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/client/style.css" />
+    <link rel="stylesheet" href="/client/post.css" />
     <title>Posts</title>
-    <style>
-      .post {
-        cursor: pointer; /* 커서를 포인터로 변경 */
-        padding: 10px;
-        transition: background-color 0.3s ease;
-      }
-
-      .post:hover {
-        background-color: #f0f0f0; /* 배경색 변경 */
-      }
-    </style>
   </head>
   <body>
-    <a href="/">Main Page</a>
-    {% if user %}
-    <h2>{{ user.location }}</h2>
-    {% else %}
-    <h2>서울 중구</h2>
-    {% endif %} {% if user %}
-    <a href="/posts/write">Write a Post</a>
-    {% endif %}
-    <div id="posts">
-      {% if posts.length > 0 %}
-      <div>
-        {% for post in posts %}
-        <div class="post" data-post-id="{{ post.id }}">
-          <h3>{{ post.title | truncate(20, true, '...') }}</h3>
-          <p>{{ post.content | truncate(20, true, '...') }}</p>
-          <p>Posted by: {{ post.User.nickname }}</p>
-          <hr />
-        </div>
-        {% endfor %}
+    {% include "header.html" %}
+    <div class="container">
+      {% if user %}
+      <a href="/posts/write" class="button">글 쓰기</a>
+      {% endif %}
+      <div id="posts">
+        {% if posts.length > 0 %}
+        <ul>
+          {% for post in posts %}
+          <li class="post" data-post-id="{{ post.id }}">
+            <h3>{{ post.title | truncate(20, true, '...') }}</h3>
+            <p>{{ post.content | truncate(20, true, '...') }}</p>
+            <div class="post-footer">
+              <span>Posted by: {{ post.User.nickname }}</span>
+              <span>Posted on: {{ post.createdAt | timeSince }}</span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No posts in {{ location }} yet.</p>
+        {% endif %}
       </div>
-      {% else %} {% if user %}
-      <p>No posts in {{ user.location }} yet.</p>
-      {% else %}
-      <p>No posts in 서울 중구 yet.</p>
-      {% endif %} {% endif %}
     </div>
-
     <script src="/client/posts.client.js"></script>
   </body>
 </html>

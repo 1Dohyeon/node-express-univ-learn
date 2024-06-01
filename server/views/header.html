@@ -1,0 +1,19 @@
+<head>
+  <link rel="stylesheet" href="/client/header.css" />
+</head>
+<header>
+  <div class="headerContents">
+    <h1 onclick="window.location.href='/'" style="cursor: pointer">LOGO</h1>
+    <div class="nav">
+      {% if user %}
+      <a href="/users/my">My Page</a>
+      <form action="/auth/logout" method="post" style="display: inline">
+        <button type="submit">Logout</button>
+      </form>
+      {% else %}
+      <a href="/login">로그인</a>
+      <a href="/register">회원가입</a>
+      {% endif %}
+    </div>
+  </div>
+</header>

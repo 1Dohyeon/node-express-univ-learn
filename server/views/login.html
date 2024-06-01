@@ -4,17 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
+    <link rel="stylesheet" href="/client/style.css" />
+    <link rel="stylesheet" href="/client/login.css" />
   </head>
   <body>
-    <h1>Login</h1>
-    <form action="/auth/login" method="post">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required />
-      <br />
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required />
-      <br />
-      <button type="submit">Login</button>
-    </form>
+    <div class="container">
+      <h2>로그인</h2>
+      <form action="/auth/login" method="post">
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" required />
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" required />
+        <button type="submit">로그인</button>
+      </form>
+      <hr />
+      <div class="button-container">
+        <button
+          class="button-secondary"
+          onclick="window.location.href='/register'"
+        >
+          회원가입 페이지 바로가기
+        </button>
+        <button class="button-secondary" onclick="window.location.href='/'">
+          비회원으로 시작하기
+        </button>
+      </div>
+    </div>
   </body>
 </html>

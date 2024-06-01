@@ -32,22 +32,15 @@ exports.getMyPage = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (id, data) => {
   try {
-    const { name, nickname, location } = req.body;
-    const user = await User.findByPk(req.user.id);
-
+    const user = await User.findByPk(id);
     if (!user) {
-      return res.status(404).send("User not found");
+      throw new Error("User not found");
     }
-
-    if (name) user.name = name;
-    if (nickname) user.nickname = nickname;
-    if (location) user.location = location;
-
-    await user.save();
-    res.send("User updated successfully!");
+    await user.update(data);
+    return user;
   } catch (err) {
-    res.status(500).send(err.message);
+    throw new Error(err.message);
   }
 };

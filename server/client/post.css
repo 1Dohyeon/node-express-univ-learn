@@ -1,0 +1,71 @@
+.post-container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post-title {
+  font-size: 2em;
+  margin-top: 0;
+  word-wrap: break-word; /* 긴 단어가 있을 때 줄 바꿈 */
+  white-space: pre-wrap; /* 줄 바꿈을 유지하고 긴 텍스트는 자동으로 줄 바꿈 */
+}
+
+.post-content {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  word-wrap: break-word; /* 긴 단어가 있을 때 줄 바꿈 */
+  white-space: pre-wrap; /* 줄 바꿈을 유지하고 긴 텍스트는 자동으로 줄 바꿈 */
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.post-footer span {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.button-group {
+  margin-top: 20px;
+}
+
+.button-group .button {
+  margin-right: 10px;
+}
+
+.comment {
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.comment p {
+  margin: 0.5em 0;
+  word-wrap: break-word; /* 긴 단어가 있을 때 줄 바꿈 */
+  white-space: pre-wrap; /* 줄 바꿈을 유지하고 긴 텍스트는 자동으로 줄 바꿈 */
+}
+
+.comment .post-footer {
+  justify-content: space-between;
+}
+
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.comment button {
+  margin-top: 10px;
+}

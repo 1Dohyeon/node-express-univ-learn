@@ -4,26 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Post</title>
+    <link rel="stylesheet" href="/client/style.css" />
+    <link rel="stylesheet" href="/client/post_write.css" />
   </head>
   <body>
-    <h1>Edit Post</h1>
-    <form action="/posts/edit/{{ post.id }}" method="post">
-      <label for="title">Title:</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        value="{{ post.title }}"
-        required
-      />
-      <br />
-      <label for="content">Content:</label>
-      <textarea id="content" name="content" required>
+    {% include "header.html" %}
+    <div class="container">
+      <h2>Edit Post</h2>
+      <form action="/posts/edit/{{ post.id }}" method="post">
+        <label for="title">Title:</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value="{{ post.title }}"
+          required
+        />
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" required>
 {{ post.content }}</textarea
-      >
-      <br />
-      <button type="submit">Update</button>
-    </form>
-    <a href="/posts/{{ post.id }}">Cancel</a>
+        >
+        <button type="submit">Update</button>
+      </form>
+      <a href="/posts/{{ post.id }}">Cancel</a>
+    </div>
   </body>
 </html>

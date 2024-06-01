@@ -7,6 +7,7 @@ const session = require("express-session");
 const passport = require("./config/passportConfig");
 const { sequelize } = require("./models/index.entity");
 const path = require("path");
+const timeSince = require("./helper/time");
 
 dotenv.config();
 
@@ -18,10 +19,15 @@ app.use(cors());
 
 // 뷰 엔진 설정
 app.set("view engine", "html");
-nunjucks.configure("views", {
+const env = nunjucks.configure("views", {
   express: app,
   watch: true,
+  autoescape: true,
+  noCache: false,
+  throwOnUndefined: true,
 });
+
+env.addFilter("timeSince", timeSince);
 
 // 모델과의 동기화
 sequelize
@@ -56,11 +62,13 @@ const indexRouter = require("./routes/index.route");
 const userRouter = require("./routes/user.route");
 const authRouter = require("./routes/auth.route");
 const postRouter = require("./routes/post.route");
+const commentRouter = require("./routes/comment.route");
 
 app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
+app.use("/comments", commentRouter);
 
 // 서버 시작
 app.listen(port, () => {

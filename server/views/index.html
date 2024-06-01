@@ -4,23 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ title }}</title>
+    <link rel="stylesheet" href="/client/styles.css" />
   </head>
   <body>
-    <h1>Welcome to the Community Board</h1>
-    <hr />
+    {% include "header.html" %}
+    <div class="container">
+      <hr />
 
-    {% if user %}
-    <p>{{ user.nickname }}님, 환영합니다!</p>
-    <a href="/users/my">My Page</a>
-    <form action="/auth/logout" method="post">
-      <button type="submit">Logout</button>
-    </form>
-    {% else %}
-    <p>로그인해 주세요.</p>
-    <a href="/login">로그인</a> | <a href="/register">회원가입</a>
-    {% endif %}
-    <hr />
+      {% if user %}
+      <p>{{ user.nickname }}님, 환영합니다!</p>
+      <a href="/users/my">My Page</a>
+      <form action="/auth/logout" method="post">
+        <button type="submit">Logout</button>
+      </form>
+      {% else %}
+      <p>로그인해 주세요.</p>
+      <a href="/login">로그인</a> | <a href="/register">회원가입</a>
+      {% endif %}
 
-    <a href="/posts">View Posts</a>
+      <hr />
+
+      <a href="/posts">View Posts</a>
+    </div>
   </body>
 </html>

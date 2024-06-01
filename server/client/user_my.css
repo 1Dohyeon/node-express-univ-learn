@@ -1,0 +1,18 @@
+label {
+  display: block;
+  margin-top: 1em;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5em;
+  margin-top: 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.container button {
+  margin-top: 1em;
+}

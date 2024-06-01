@@ -3,8 +3,7 @@ const router = express.Router();
 
 // 홈 페이지 라우트
 router.get("/", (req, res) => {
-  let user = req.isAuthenticated() ? req.user : null;
-  res.render("index.html", { title: "Community Board", user });
+  res.redirect("/posts");
 });
 
 // 로그인 페이지 라우트

@@ -1,5 +1,5 @@
-const Post = require("../models/post.entity");
-const User = require("../models/user.entity");
+const { Post, User, Comment } = require("../models/index.entity");
+const commentService = require("./comment.service");
 
 exports.getPostsByLocation = async (location) => {
   return await Post.findAll({
@@ -27,9 +27,11 @@ exports.getPostsByUserId = async (userId) => {
 };
 
 exports.getPostById = async (postId) => {
-  return await Post.findByPk(postId, {
+  const post = await Post.findByPk(postId, {
     include: [{ model: User, attributes: ["id", "nickname"] }],
   });
+  const comments = await commentService.getCommentsByPostId(postId);
+  return { post, comments };
 };
 
 exports.updatePost = async (postId, title, content) => {

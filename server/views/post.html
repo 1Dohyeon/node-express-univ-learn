@@ -4,24 +4,68 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ post.title }}</title>
+    <link rel="stylesheet" href="/client/post.css" />
+    <link rel="stylesheet" href="/client/style.css" />
   </head>
   <body>
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.content }}</p>
-    <p>Posted by: {{ post.User.nickname }}</p>
-    <p>Posted on: {{ post.createdAt }}</p>
+    {% include "header.html" %}
+    <div class="container">
+      {% if user %}
+      <a href="/posts/write" class="button">글 쓰기</a>
+      {% endif %}
+      <div class="post-container">
+        <h1 class="post-title">{{ post.title }}</h1>
+        <p class="post-content">{{ post.content }}</p>
+        <div class="post-footer">
+          <span>Posted by: {{ post.User.nickname }}</span>
+          <span>Posted on: {{ post.createdAt | timeSince }}</span>
+        </div>
 
-    {% if user and user.id == post.User.id %}
-    <a href="/posts/edit/{{ post.id }}">Edit</a>
-    <form
-      action="/posts/delete/{{ post.id }}"
-      method="post"
-      style="display: inline"
-    >
-      <button type="submit">Delete</button>
-    </form>
-    {% endif %}
+        {% if user and user.id == post.User.id %}
+        <div class="button-group">
+          <a href="/posts/edit/{{ post.id }}" class="button">Edit</a>
+          <form
+            action="/posts/delete/{{ post.id }}"
+            method="post"
+            style="display: inline"
+          >
+            <button type="submit" class="button">Delete</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
 
-    <a href="/posts">Back to Posts</a>
+      <h3>댓글 작성</h3>
+      {% if user %}
+      <form action="/comments/create" method="post" id="commentForm">
+        <input type="hidden" name="postId" value="{{ post.id }}" />
+        <textarea name="content" required></textarea>
+        <button type="submit" class="button">Add Comment</button>
+      </form>
+      {% else %}
+      <p>로그인 후에 댓글을 이용할 수 있습니다.</p>
+      {% endif %}
+
+      <hr />
+      <h3>댓글</h3>
+      <div id="comments">
+        {% for comment in comments %}
+        <div class="comment">
+          <p>{{ comment.content }}</p>
+          <div class="post-footer">
+            <span>Commented by: {{ comment.User.nickname }}</span>
+            <span>Commented on: {{ comment.createdAt | timeSince }}</span>
+          </div>
+          {% if user and user.id == comment.userId %}
+          <form action="/comments/delete/{{ comment.id }}" method="post">
+            <button type="submit" class="button">Delete</button>
+          </form>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <a href="/posts" class="button">Back to Posts</a>
+    </div>
   </body>
 </html>

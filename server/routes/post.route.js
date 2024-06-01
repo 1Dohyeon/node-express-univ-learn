@@ -14,7 +14,7 @@ function isAuthenticated(req, res, next) {
 
 // 게시글 작성 페이지
 router.get("/write", isAuthenticated, (req, res) => {
-  res.render("post_write.html");
+  res.render("post_write.html", { user: req.user });
 });
 
 // 게시글 작성
@@ -22,13 +22,8 @@ router.post("/create", isAuthenticated, async (req, res) => {
   try {
     const { title, content } = req.body;
     const user = await userService.getUserById(req.user.id);
-    const post = await postService.createPost(
-      req.user.id,
-      title,
-      content,
-      user.location
-    );
-    res.redirect("/");
+    await postService.createPost(req.user.id, title, content, user.location);
+    res.redirect("/posts");
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -37,11 +32,14 @@ router.post("/create", isAuthenticated, async (req, res) => {
 // 게시글 수정 페이지
 router.get("/edit/:id", isAuthenticated, async (req, res) => {
   try {
-    const post = await postService.getPostById(req.params.id);
+    const { post } = await postService.getPostById(req.params.id);
+    if (!post) {
+      return res.redirect("/posts");
+    }
     if (post.User.id !== req.user.id) {
       return res.redirect(`/posts/${req.params.id}`);
     }
-    res.render("post_edit.html", { post });
+    res.render("post_edit.html", { post, user: req.user });
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -51,8 +49,10 @@ router.get("/edit/:id", isAuthenticated, async (req, res) => {
 router.post("/edit/:id", isAuthenticated, async (req, res) => {
   try {
     const { title, content } = req.body;
-    const post = await postService.getPostById(req.params.id);
-    console.log(post.User.id);
+    const { post } = await postService.getPostById(req.params.id);
+    if (!post) {
+      return res.redirect(`/posts/${req.params.id}`);
+    }
     if (post.User.id !== req.user.id) {
       return res.redirect(`/posts/${req.params.id}`);
     }
@@ -66,7 +66,10 @@ router.post("/edit/:id", isAuthenticated, async (req, res) => {
 // 게시글 삭제
 router.post("/delete/:id", isAuthenticated, async (req, res) => {
   try {
-    const post = await postService.getPostById(req.params.id);
+    const { post } = await postService.getPostById(req.params.id);
+    if (!post) {
+      return res.redirect("/posts");
+    }
     if (post.User.id !== req.user.id) {
       return res.redirect(`/posts/${req.params.id}`);
     }
@@ -95,13 +98,14 @@ router.get("/", async (req, res) => {
 // 게시글 상세 조회
 router.get("/:id", async (req, res) => {
   try {
-    const post = await postService.getPostById(req.params.id);
-    res.render("post.html", { post, user: req.user });
+    const { post, comments } = await postService.getPostById(req.params.id);
+    if (!post) {
+      return res.redirect("/posts");
+    }
+    res.render("post.html", { post, comments, user: req.user });
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
-
-module.exports = router;
 
 module.exports = router;

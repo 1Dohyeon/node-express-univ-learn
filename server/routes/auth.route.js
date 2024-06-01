@@ -1,25 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
 const authService = require("../service/auth.service");
 
-router.post("/register", authService.register);
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureFlash: false,
-  })
-);
+// 이메일 중복 체크
+router.get("/check-email/:email", authService.checkEmailAvailability);
 
-router.post("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/");
-  });
-});
+// 닉네임 중복 체크
+router.get("/check-nickname/:nickname", authService.checkNicknameAvailability);
+
+// 회원가입
+router.post("/register", authService.register);
+
+// 로그인
+router.post("/login", authService.login);
+
+// 로그아웃
+router.post("/logout", authService.logout);
 
 module.exports = router;

@@ -26,6 +26,7 @@ module.exports = class User extends Sequelize.Model {
         nickname: {
           type: Sequelize.STRING(100),
           allowNull: false,
+          unique: true,
           defaultValue: "", // 초기값을 빈 문자열로 설정
         },
         location: {
