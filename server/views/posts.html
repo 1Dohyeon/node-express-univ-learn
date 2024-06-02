@@ -10,9 +10,14 @@
   <body>
     {% include "header.html" %}
     <div class="container">
-      {% if user %}
-      <a href="/posts/write" class="button">글 쓰기</a>
-      {% endif %}
+      <div class="container_nav">
+        {% if user %}
+        <h3>{{ user.location }}</h3>
+        <a href="/posts/write" class="write_button">글 쓰기</a>
+        {% else %}
+        <h3>서울 중구</h3>
+        {% endif %}
+      </div>
       <div id="posts">
         {% if posts.length > 0 %}
         <ul>

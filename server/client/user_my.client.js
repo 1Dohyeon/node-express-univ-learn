@@ -17,12 +17,12 @@ document
       );
       const nicknameResult = await nicknameResponse.json();
       if (!nicknameResult.available) {
-        alert("Nickname is already taken");
+        alert("이미 존재하는 닉네임입니다.");
         return;
       }
     } catch (error) {
-      console.error("Error checking nickname:", error);
-      alert("Error checking nickname");
+      console.error("닉네임 체크 에러:", error);
+      alert("닉네임 체크 에러");
       return;
     }
 
@@ -36,14 +36,14 @@ document
       .then((response) => response.json())
       .then((result) => {
         if (result.success) {
-          alert("Profile updated successfully");
+          alert("프로필 업데이트 성공");
           window.location.reload();
         } else {
-          alert("Error updating profile");
+          alert("프로필 업데이트 실패");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("Error updating profile");
+        alert("프로필 업데이트 실패");
       });
   });

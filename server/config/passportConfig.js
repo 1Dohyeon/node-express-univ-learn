@@ -14,11 +14,13 @@ passport.use(
       try {
         const user = await User.findOne({ where: { email } });
         if (!user) {
-          return done(null, false, { message: "Incorrect email." });
+          return done(null, false, { message: "이메일이 일치하지 않습니다." });
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-          return done(null, false, { message: "Incorrect password." });
+          return done(null, false, {
+            message: "패스워드가 일치하지 않습니다.",
+          });
         }
         return done(null, user);
       } catch (err) {

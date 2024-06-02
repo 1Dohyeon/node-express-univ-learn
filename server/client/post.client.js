@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     commentForm.addEventListener("submit", (event) => {
       if (!isUserLoggedIn) {
         event.preventDefault();
-        alert("Please log in to add a comment.");
+        alert("로그인 후에 댓글을 작성할 수 있습니다.");
       }
     });
   }

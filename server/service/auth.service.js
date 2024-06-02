@@ -89,7 +89,7 @@ exports.getKakaoUrl = (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
-  console.log("Generated Kakao URL:", finalUrl);
+  console.log("Kakao URL:", finalUrl);
   return finalUrl;
 };
 
@@ -157,23 +157,6 @@ exports.finishKakaoLogin = async (finalUrl, req, res) => {
       email: user.email,
       nickname: user.nickname,
       token: token,
-    });
-
-    // 세션에 데이터 저장
-    req.session.kakaoUser = {
-      way: "kakao",
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      nickname: user.nickname,
-      token: token,
-    };
-
-    // JWT 토큰을 쿠키에 저장
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // 환경에 따라 secure 설정
-      maxAge: 3600000, // 1시간
     });
 
     // 사용자 객체를 세션에 저장하여 req.user로 접근할 수 있도록 함

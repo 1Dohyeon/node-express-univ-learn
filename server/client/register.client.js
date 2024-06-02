@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 비밀번호 확인
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      alert("패스워드가 일치하지 않습니다.");
       return;
     }
 
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let response = await fetch(`/auth/check-email/${email}`);
       let data = await response.json();
       if (!data.available) {
-        alert("Email already in use");
+        alert("이미 존재하는 이메일입니다.");
         return;
       }
 
@@ -29,15 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
       response = await fetch(`/auth/check-nickname/${nickname}`);
       data = await response.json();
       if (!data.available) {
-        alert("Nickname already in use");
+        alert("이미 존재하는 닉네임입니다.");
         return;
       }
 
       // 모든 체크가 통과되면 폼 제출
       registerForm.submit();
     } catch (error) {
-      console.error("Error checking availability:", error);
-      alert("An error occurred. Please try again later.");
+      console.error("회원가입 에러:", error);
+      alert("회원가입 에러");
     }
   });
 });

@@ -24,7 +24,7 @@ exports.getMyPage = async (req, res) => {
       attributes: ["id", "name", "nickname", "location"],
     });
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).send("사용자를 찾을 수 없습니다.");
     }
     res.render("user_my.html", { user });
   } catch (err) {
@@ -36,7 +36,7 @@ exports.updateUser = async (id, data) => {
   try {
     const user = await User.findByPk(id);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("사용자를 찾을 수 없습니다.");
     }
     await user.update(data);
     return user;
