@@ -1,6 +1,6 @@
-const { KakaoUser } = require("../models");
 const jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");
+const { User } = require("../models");
 
 function startKakaoLogin(req, res) {
   const baseUrl = "https://kauth.kakao.com/oauth/authorize";
@@ -54,13 +54,13 @@ async function finishKakaoLogin(finalUrl, req, res) {
 
     const {
       id,
-      properties: { nickname },
+      properties: { nickname, email },
     } = userRequest;
 
     // 사용자 정보 저장 또는 업데이트
-    let user = await KakaoUser.findOne({ where: { id } });
+    let user = await User.findOne({ where: { id } });
     if (!user) {
-      user = await KakaoUser.create({ id, name: nickname });
+      user = await User.create({ id, email, name: nickname, nickname });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -70,6 +70,8 @@ async function finishKakaoLogin(finalUrl, req, res) {
     console.log({
       id: user.id,
       name: user.name,
+      email: user.email,
+      nickname: user.nickname,
       token: token,
     });
 
@@ -77,7 +79,9 @@ async function finishKakaoLogin(finalUrl, req, res) {
     req.session.kakaoUser = {
       way: "kakao",
       id: user.id,
+      email: user.email,
       name: user.name,
+      nickname: user.nickname,
       token: token,
     };
 

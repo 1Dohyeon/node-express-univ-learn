@@ -41,12 +41,6 @@ router.post("/login", async (req, res) => {
 
 // 카카오 로그인 시작
 router.get("/kakao/start", (req, res) => {
-  const url = startKakaoLogin();
-  res.redirect(url);
-});
-
-// 카카오 로그인 시작
-router.get("/kakao/start", (req, res) => {
   try {
     const url = startKakaoLogin();
     res.redirect(url);

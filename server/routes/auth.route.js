@@ -17,4 +17,13 @@ router.post("/login", authService.login);
 // 로그아웃
 router.post("/logout", authService.logout);
 
+// 카카오 로그인
+router.get("/kakao/start", authService.startKakaoLogin);
+
+// 카카오 로그인 콜백
+router.get("/kakao/finish", async (req, res) => {
+  const finalUrl = authService.getKakaoUrl(req);
+  await authService.finishKakaoLogin(finalUrl, req, res);
+});
+
 module.exports = router;
