@@ -36,16 +36,7 @@
           required
         />
         <br />
-        <label for="sido">시/도:</label>
-        <select id="sido" name="sido" required>
-          <option value="">Select 시/도</option>
-        </select>
-        <br />
-        <label for="gungu">군/구:</label>
-        <select id="gungu" name="gungu" required>
-          <option value="">Select 군/구</option>
-        </select>
-        <br />
+
         <label for="location">나의 주소:</label>
         <input
           type="text"
@@ -54,6 +45,15 @@
           value="{{ user.location }}"
           readonly
         />
+        <div class="select_container">
+          <label for="sido">주소 선택:</label>
+          <select id="sido" name="sido" required>
+            <option value="">Select 시/도</option>
+          </select>
+          <select id="gungu" name="gungu" required>
+            <option value="">Select 군/구</option>
+          </select>
+        </div>
         <br />
         <button type="submit">Update</button>
       </form>

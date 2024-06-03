@@ -16,3 +16,31 @@ input[type="text"] {
 .container button {
   margin-top: 1em;
 }
+
+/* select-container 스타일링 */
+.select_container {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 시/도와 군/구 사이 간격 */
+}
+
+/* select 요소 스타일링 */
+.select_container select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: border-color 0.3s;
+}
+
+.select_container select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* label 스타일링 */
+.select_container label {
+  font-weight: bold;
+}
