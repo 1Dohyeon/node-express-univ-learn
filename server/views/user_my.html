@@ -38,7 +38,10 @@
           name="location"
           value="{{ user.location }}"
           required
+          autocomplete="off"
         />
+        <button type="button" id="search-address-button">주소 검색</button>
+        <ul id="location-suggestions" class="suggestions"></ul>
         <br />
         <button type="submit">Update</button>
       </form>

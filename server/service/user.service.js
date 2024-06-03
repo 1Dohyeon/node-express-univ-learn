@@ -1,4 +1,5 @@
 const User = require("../models/user.entity");
+const axios = require("axios");
 
 exports.getUserById = async (id) => {
   return await User.findByPk(id);
@@ -32,14 +33,32 @@ exports.getMyPage = async (req, res) => {
   }
 };
 
-exports.updateUser = async (id, data) => {
+exports.updateUser = async (userId, updateData) => {
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(userId);
     if (!user) {
-      throw new Error("사용자를 찾을 수 없습니다.");
+      throw new Error("User not found");
     }
-    await user.update(data);
-    return user;
+    await user.update(updateData);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+exports.searchAddress = async (query) => {
+  try {
+    const response = await axios.get(
+      "https://dapi.kakao.com/v2/local/search/address.json",
+      {
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAO_JS_KET}`,
+        },
+        params: {
+          query: query,
+        },
+      }
+    );
+    return response.data;
   } catch (err) {
     throw new Error(err.message);
   }
