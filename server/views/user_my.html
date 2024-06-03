@@ -12,7 +12,12 @@
     {% include "header.html" %}
     <div class="container">
       <h2>내 프로필 정보</h2>
-      <form id="userForm" data-user-id="{{ user.id }}" method="put">
+      <form
+        id="userForm"
+        data-user-id="{{ user.id }}"
+        data-current-nickname="{{ user.nickname }}"
+        method="put"
+      >
         <label for="name">Name: {{ user.name }}</label>
         <input
           type="text"
@@ -31,17 +36,24 @@
           required
         />
         <br />
-        <label for="location">Location: {{ user.location }}</label>
+        <label for="sido">시/도:</label>
+        <select id="sido" name="sido" required>
+          <option value="">Select 시/도</option>
+        </select>
+        <br />
+        <label for="gungu">군/구:</label>
+        <select id="gungu" name="gungu" required>
+          <option value="">Select 군/구</option>
+        </select>
+        <br />
+        <label for="location">나의 주소:</label>
         <input
           type="text"
           id="location"
           name="location"
           value="{{ user.location }}"
-          required
-          autocomplete="off"
+          readonly
         />
-        <button type="button" id="search-address-button">주소 검색</button>
-        <ul id="location-suggestions" class="suggestions"></ul>
         <br />
         <button type="submit">Update</button>
       </form>

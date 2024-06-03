@@ -37,14 +37,22 @@ router.put("/my", isAuthenticated, async (req, res) => {
   }
 });
 
-// 주소 검색 엔드포인트
-router.get("/search-address", isAuthenticated, async (req, res) => {
+// 시/도 목록 제공
+router.get("/api/sido", async (req, res) => {
   try {
-    const query = req.query.query;
-    console.log("Received search query:", query);
-    const results = await userService.searchAddress(query);
-    console.log("Address search results:", results);
-    res.json(results);
+    const sidos = await userService.getSidoList();
+    res.json(sidos);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+// 군/구 목록 제공
+router.get("/api/gungu", async (req, res) => {
+  try {
+    const { sido } = req.query;
+    const gungus = await userService.getGunguList(sido);
+    res.json(gungus);
   } catch (err) {
     res.status(500).send(err.message);
   }

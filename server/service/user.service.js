@@ -45,21 +45,19 @@ exports.updateUser = async (userId, updateData) => {
   }
 };
 
-exports.searchAddress = async (query) => {
-  try {
-    const response = await axios.get(
-      "https://dapi.kakao.com/v2/local/search/address.json",
-      {
-        headers: {
-          Authorization: `KakaoAK ${process.env.KAKAO_JS_KET}`,
-        },
-        params: {
-          query: query,
-        },
-      }
-    );
-    return response.data;
-  } catch (err) {
-    throw new Error(err.message);
-  }
+exports.getSidoList = async () => {
+  // 시/도 목록을 가져오는 로직 (예: 외부 API 호출 또는 자체 데이터베이스 사용)
+  // 여기서는 예제로 간단한 배열을 반환합니다.
+  return ["서울특별시", "부산광역시", "대구광역시"];
+};
+
+exports.getGunguList = async (sido) => {
+  // 군/구 목록을 가져오는 로직 (예: 외부 API 호출 또는 자체 데이터베이스 사용)
+  // 여기서는 예제로 간단한 객체를 사용합니다.
+  const gunguData = {
+    서울특별시: ["강남구", "강동구", "강북구", "중구"],
+    부산광역시: ["중구", "서구", "동구"],
+    대구광역시: ["남구", "북구", "수성구"],
+  };
+  return gunguData[sido] || [];
 };

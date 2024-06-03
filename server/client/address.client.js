@@ -1,69 +1,60 @@
 document.addEventListener("DOMContentLoaded", function () {
   const sidoSelect = document.getElementById("sido");
   const gunguSelect = document.getElementById("gungu");
+  const locationInput = document.getElementById("location");
 
-  // 시/도 리스트를 채우기 위한 함수
-  function populateSido() {
-    const sidos = [
-      "서울특별시",
-      "부산광역시",
-      "대구광역시",
-      "인천광역시",
-      "광주광역시",
-      "대전광역시",
-      "울산광역시",
-      "세종특별자치시",
-      "경기도",
-      "강원도",
-      "충청북도",
-      "충청남도",
-      "전라북도",
-      "전라남도",
-      "경상북도",
-      "경상남도",
-      "제주특별자치도",
-    ];
+  const userLocation = locationInput.value.split(" ");
+  const defaultSido = userLocation[0] || "서울특별시";
+  const defaultGungu = userLocation[1] || "중구";
+
+  const loadSidoOptions = async () => {
+    const sidos = ["서울특별시", "부산광역시", "대구광역시"];
     sidos.forEach((sido) => {
       const option = document.createElement("option");
       option.value = sido;
       option.textContent = sido;
       sidoSelect.appendChild(option);
     });
-  }
+    sidoSelect.value = defaultSido;
+  };
 
-  // 시/도를 선택했을 때 군/구 리스트를 업데이트하는 함수
-  async function updateGungu(sido) {
-    // 예시 API 호출 (실제로 사용할 API로 변경 필요)
-    try {
-      const response = await fetch(
-        `/api/get-gungu?sido=${encodeURIComponent(sido)}`
-      );
-      const data = await response.json();
+  const loadGunguOptions = async (sido) => {
+    const gunguData = {
+      서울특별시: ["강남구", "강동구", "강북구", "중구"],
+      부산광역시: ["중구", "서구", "동구"],
+      대구광역시: ["남구", "북구", "수성구"],
+    };
+    const gungus = gunguData[sido] || [];
+    gunguSelect.innerHTML = '<option value="">Select 군/구</option>';
+    gungus.forEach((gungu) => {
+      const option = document.createElement("option");
+      option.value = gungu;
+      option.textContent = gungu;
+      gunguSelect.appendChild(option);
+    });
+    gunguSelect.value = defaultGungu;
+  };
 
-      // 군/구 리스트 초기화
-      gunguSelect.innerHTML = '<option value="">군/구를 선택하세요</option>';
-
-      data.forEach((gungu) => {
-        const option = document.createElement("option");
-        option.value = gungu;
-        option.textContent = gungu;
-        gunguSelect.appendChild(option);
-      });
-    } catch (error) {
-      console.error("Error fetching gungu:", error);
-    }
-  }
-
-  // 시/도 선택 이벤트 리스너
-  sidoSelect.addEventListener("change", function () {
-    const selectedSido = sidoSelect.value;
+  sidoSelect.addEventListener("change", (event) => {
+    const selectedSido = event.target.value;
     if (selectedSido) {
-      updateGungu(selectedSido);
+      loadGunguOptions(selectedSido);
+      locationInput.value = selectedSido;
     } else {
-      gunguSelect.innerHTML =
-        '<option value="">시/도를 먼저 선택하세요</option>';
+      gunguSelect.innerHTML = '<option value="">Select 군/구</option>';
+      locationInput.value = "";
     }
   });
 
-  populateSido();
+  gunguSelect.addEventListener("change", () => {
+    const selectedSido = sidoSelect.value;
+    const selectedGungu = gunguSelect.value;
+    if (selectedSido && selectedGungu) {
+      locationInput.value = `${selectedSido} ${selectedGungu}`;
+    }
+  });
+
+  loadSidoOptions();
+  loadGunguOptions(defaultSido);
+  locationInput.value = `${defaultSido} ${defaultGungu}`;
 });

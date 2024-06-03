@@ -32,7 +32,7 @@ module.exports = class User extends Sequelize.Model {
         location: {
           type: Sequelize.STRING(100),
           allowNull: true,
-          defaultValue: "서울 중구",
+          defaultValue: "서울특별시 중구",
         },
         createdAt: {
           type: Sequelize.DATE,
