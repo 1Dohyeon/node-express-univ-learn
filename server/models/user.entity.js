@@ -27,7 +27,6 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.STRING(100),
           allowNull: false,
           unique: true,
-          defaultValue: "", // 초기값을 빈 문자열로 설정
         },
         location: {
           type: Sequelize.STRING(100),
@@ -49,12 +48,6 @@ module.exports = class User extends Sequelize.Model {
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-        hooks: {
-          afterCreate: async (user, options) => {
-            user.nickname = "user" + user.id;
-            await user.save();
-          },
-        },
       }
     );
   }

@@ -3,10 +3,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const nunjucks = require("nunjucks");
-const session = require("express-session");
 const passport = require("./config/passportConfig");
 const { sequelize } = require("./models/index.entity");
 const path = require("path");
+const session = require("express-session");
+const flash = require("connect-flash");
 const timeSince = require("./helper/time");
 
 dotenv.config();
@@ -51,8 +52,21 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+// Passport 초기화
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Flash 메시지 미들웨어 설정
+app.use(flash());
+
+// 글로벌 변수 설정
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 // 정적 파일 제공 설정
 app.use("/client", express.static(path.join(__dirname, "client")));

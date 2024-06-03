@@ -38,7 +38,7 @@ exports.register = async (req, res) => {
       email,
       password: hashedPassword,
       name,
-      nickname,
+      nickname, // 사용자 입력 닉네임 사용
     });
     res.redirect("/login");
   } catch (err) {
@@ -47,11 +47,24 @@ exports.register = async (req, res) => {
 };
 
 // 로그인
-exports.login = (req, res, next) => {
-  return passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureFlash: true,
+exports.login = async (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal Server Error" });
+    }
+    if (!user) {
+      return res.status(401).json({ success: false, message: info.message });
+    }
+    req.login(user, (err) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ success: false, message: "Internal Server Error" });
+      }
+      return res.json({ success: true });
+    });
   })(req, res, next);
 };
 
@@ -93,13 +106,16 @@ exports.getKakaoUrl = (req, res) => {
   return finalUrl;
 };
 
-exports.generateUniqueNickname = async (baseNickname) => {
-  let uniqueNickname = baseNickname + Math.floor(1000 + Math.random() * 9000);
+const generateUniqueNickname = async (baseNickname) => {
+  const generateRandomNumber = () =>
+    Math.floor(100000000 + Math.random() * 900000000); // 9자리 랜덤 숫자 생성
+
+  let uniqueNickname = baseNickname + generateRandomNumber();
   let isUnique =
     (await User.findOne({ where: { nickname: uniqueNickname } })) === null;
 
   while (!isUnique) {
-    uniqueNickname = baseNickname + Math.floor(1000 + Math.random() * 9000);
+    uniqueNickname = baseNickname + generateRandomNumber();
     isUnique =
       (await User.findOne({ where: { nickname: uniqueNickname } })) === null;
   }
@@ -137,13 +153,13 @@ exports.finishKakaoLogin = async (finalUrl, req, res) => {
     // 사용자 정보 저장 또는 업데이트
     let user = await User.findOne({ where: { id } });
     if (!user) {
-      const uniqueNickname = await exports.generateUniqueNickname("user");
+      const uniqueNickname = await generateUniqueNickname("user");
       user = await User.create({
         id,
         email,
-        password: email,
+        password: await bcrypt.hash(email, 10), // 이메일을 해시하여 비밀번호로 사용
         name: nickname,
-        nickname: uniqueNickname,
+        nickname: uniqueNickname, // uniqueNickname 사용
       });
     }
 

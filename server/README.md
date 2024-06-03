@@ -11,6 +11,10 @@ npm i express-session
 npm i sequelize sequelize-cli
 npm i passport passport-local bcrypt jsonwebtoken
 npm i cors
+npm i passport-kakao
+npm i connect-flash
+npm i --save-dev jest
+npm i --save-dev supertest
 ```
 
 2. 폴더 구조
@@ -40,7 +44,7 @@ server/
 │   └── login.html
 ├── .env
 ├── app.js
-├── README.ms
+├── README.md
 ├── package.json
 └── package-lock.json
 ```
