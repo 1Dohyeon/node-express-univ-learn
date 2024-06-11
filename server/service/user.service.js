@@ -1,10 +1,12 @@
 const User = require("../models/user.entity");
 const axios = require("axios");
 
+// 사용자 id를 통해서 기본 정보 가져옴
 exports.getUserById = async (id) => {
   return await User.findByPk(id);
 };
 
+/** 로그인한 사용자의 프로필 정보를 가져옴(실명, 위치 등) */
 exports.getUserProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
@@ -19,6 +21,8 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
+/** 로그인한 사용자의 정보를 가져옴(실명, 위치 등)
+ * 로그인 인증 필요*/
 exports.getMyPage = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
@@ -33,6 +37,7 @@ exports.getMyPage = async (req, res) => {
   }
 };
 
+// 사용자 정보 업데이트(마이페이지에서 업데이트 가능)
 exports.updateUser = async (userId, updateData) => {
   try {
     const user = await User.findByPk(userId);
@@ -43,6 +48,11 @@ exports.updateUser = async (userId, updateData) => {
   } catch (err) {
     throw new Error(err.message);
   }
+};
+
+// 계정 삭제(탈퇴)
+exports.deletePost = async (uderId) => {
+  return await User.destroy({ where: { id: uderId } });
 };
 
 exports.getSidoList = async () => {

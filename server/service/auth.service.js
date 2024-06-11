@@ -78,6 +78,7 @@ exports.logout = (req, res) => {
   });
 };
 
+// 카카오 로그인 시작 요청
 exports.startKakaoLogin = (req, res) => {
   const baseUrl = "https://kauth.kakao.com/oauth/authorize";
   const config = {
@@ -92,6 +93,7 @@ exports.startKakaoLogin = (req, res) => {
   res.redirect(finalUrl);
 };
 
+// 카카오 로그인 response url 을 받음
 exports.getKakaoUrl = (req, res) => {
   const baseUrl = "https://kauth.kakao.com/oauth/token";
   const config = {
@@ -106,6 +108,7 @@ exports.getKakaoUrl = (req, res) => {
   return finalUrl;
 };
 
+// 카카오 로그인시 nickname 실명 방지를 위해 user + 랜덤 숫자 9자리로 설정
 const generateUniqueNickname = async (baseNickname) => {
   const generateRandomNumber = () =>
     Math.floor(100000000 + Math.random() * 900000000); // 9자리 랜덤 숫자 생성
@@ -123,6 +126,7 @@ const generateUniqueNickname = async (baseNickname) => {
   return uniqueNickname;
 };
 
+// 카카오 로그인 완료를 위해 마지막 url get 요청
 exports.finishKakaoLogin = async (finalUrl, req, res) => {
   const kakaoTokenRequest = await (
     await fetch(finalUrl, {

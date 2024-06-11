@@ -77,18 +77,4 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-async function generateUniqueNickname(baseNickname) {
-  let uniqueNickname = baseNickname + Math.floor(1000 + Math.random() * 9000);
-  let isUnique =
-    (await User.findOne({ where: { nickname: uniqueNickname } })) === null;
-
-  while (!isUnique) {
-    uniqueNickname = baseNickname + Math.floor(1000 + Math.random() * 9000);
-    isUnique =
-      (await User.findOne({ where: { nickname: uniqueNickname } })) === null;
-  }
-
-  return uniqueNickname;
-}
-
 module.exports = passport;
