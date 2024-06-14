@@ -17,14 +17,18 @@
         <h1 class="post-title">{{ post.title }}</h1>
         <p class="post-content">{{ post.content }}</p>
         <div class="post-footer">
-          <span>Posted by: {{ post.User.nickname }}</span>
-          <span>Posted on: {{ post.createdAt | timeSince }}</span>
+          <span>
+            <a href="/users/{{ post.User.id }}"
+              >{{ post.User.nickname }}</a
+            ></span
+          >
+          <span>{{ post.createdAt | timeSince }}</span>
         </div>
 
         <div class="post-tags">
-          <strong>Tags:</strong>
+          <strong>태그:</strong>
           {% for tag in post.Tags %}
-          <span class="tag">{{ tag.name }}</span>
+          <span class="tag">#{{ tag.name }}</span>
           {% endfor %}
         </div>
 
@@ -47,7 +51,7 @@
       <form action="/comments/create" method="post" id="commentForm">
         <input type="hidden" name="postId" value="{{ post.id }}" />
         <textarea name="content" required></textarea>
-        <button type="submit" class="button">Add Comment</button>
+        <button type="submit" class="button">댓글 작성</button>
       </form>
       {% else %}
       <p>로그인 후에 댓글을 이용할 수 있습니다.</p>
@@ -60,19 +64,21 @@
         <div class="comment">
           <p>{{ comment.content }}</p>
           <div class="post-footer">
-            <span>Commented by: {{ comment.User.nickname }}</span>
-            <span>Commented on: {{ comment.createdAt | timeSince }}</span>
+            <span>
+              <a href="/users/{{ post.User.id }}"
+                >{{ comment.User.nickname }}</a
+              ></span
+            >
+            <span>{{ comment.createdAt | timeSince }}</span>
           </div>
           {% if user and user.id == comment.userId %}
           <form action="/comments/delete/{{ comment.id }}" method="post">
-            <button type="submit" class="button">Delete</button>
+            <button type="submit" class="button">댓글 삭제</button>
           </form>
           {% endif %}
         </div>
         {% endfor %}
       </div>
-
-      <a href="/posts" class="button">Back to Posts</a>
     </div>
   </body>
 </html>
