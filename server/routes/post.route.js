@@ -69,17 +69,17 @@ router.get("/search", async (req, res) => {
   }
 });
 
-// 게시글 수정 페이지
 router.get("/edit/:id", isAuthenticated, async (req, res) => {
   try {
+    const user = await userService.getUserById(req.user.id);
     const { post } = await postService.getPostById(req.params.id);
     if (!post) {
       return res.redirect("/posts");
     }
-    if (post.User.id !== req.user.id) {
+    if (post.User.id !== user.id) {
       return res.redirect(`/posts/${req.params.id}`);
     }
-    res.render("post_edit.html", { post, user: req.user });
+    res.render("post_edit.html", { post, user });
   } catch (err) {
     res.status(500).send(err.message);
   }

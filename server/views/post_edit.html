@@ -26,14 +26,6 @@
 {{ post.content }}</textarea
         >
 
-        <label for="tags">태그 입력 ("," 를 통하여 구분 가능):</label>
-        <input
-          type="text"
-          id="tags"
-          name="tags"
-          value="{{ post.tags | join(', ') }}"
-        />
-
         <button type="submit">Update</button>
       </form>
       <a href="/posts/{{ post.id }}">Cancel</a>

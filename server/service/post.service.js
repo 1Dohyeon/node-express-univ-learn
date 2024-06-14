@@ -48,10 +48,11 @@ exports.getPostById = async (postId) => {
   const post = await Post.findByPk(postId, {
     include: [
       { model: User, attributes: ["id", "nickname"] },
-      { model: Tag, attributes: ["name"] }, // 태그 정보 포함
+      { model: Tag, attributes: ["name"] },
     ],
   });
   const comments = await commentService.getCommentsByPostId(postId);
+  console.log(post);
   return { post, comments };
 };
 
