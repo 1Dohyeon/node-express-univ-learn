@@ -65,7 +65,7 @@ exports.getPostsByTagAndLocation = async (tagName, location) => {
   return await Post.findAll({
     where: { location },
     include: [
-      { model: User, attributes: ["nickname"] },
+      { model: User, attributes: ["id", "nickname"] },
       { model: Tag, where: { name: tagName }, attributes: ["name"] },
     ],
   });

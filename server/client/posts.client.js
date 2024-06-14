@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
           if (posts.length === 0) {
             alert("없는 태그입니다.");
           } else {
-            // 여기에 posts 결과를 렌더링하는 로직 추가
             const postsContainer = document.getElementById("posts");
             postsContainer.innerHTML = `
               <ul>
@@ -39,10 +38,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h3>${post.title}</h3>
                     <p>${post.content}</p>
                     <div class="post-footer">
-                      <span>Posted by: ${post.User.nickname}</span>
-                      <span>Posted on: ${new Date(
-                        post.createdAt
-                      ).toLocaleString()}</span>
+                      <span>
+                        <a href="/users/${post.User.id}">${
+                      post.User.nickname
+                    }</a>
+                      </span>
+                      <span>${new Date(post.createdAt).toLocaleString()}</span>
+                    </div>
+                    <div class="post-tags">
+                      <strong>태그:</strong>
+                      ${post.Tags.map(
+                        (tag) => `<span class="tag">#${tag.name}</span>`
+                      ).join("")}
                     </div>
                   </li>
                 `
