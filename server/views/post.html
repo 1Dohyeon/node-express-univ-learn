@@ -21,6 +21,13 @@
           <span>Posted on: {{ post.createdAt | timeSince }}</span>
         </div>
 
+        <div class="post-tags">
+          <strong>Tags:</strong>
+          {% for tag in post.Tags %}
+          <span class="tag">{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+
         {% if user and user.id == post.User.id %}
         <div class="button-group">
           <a href="/posts/edit/{{ post.id }}" class="button">Edit</a>

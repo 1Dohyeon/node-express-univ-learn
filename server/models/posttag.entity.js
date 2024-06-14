@@ -34,7 +34,5 @@ module.exports = class PostTag extends Sequelize.Model {
     );
   }
 
-  static associate(models) {
-    // No additional associations required here, as it's a junction table.
-  }
+  static associate(models) {}
 };

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const postService = require("../service/post.service");
 const userService = require("../service/user.service");
+const tagService = require("../service/tag.service");
 
 // 로그인 확인 미들웨어
 function isAuthenticated(req, res, next) {
@@ -20,9 +21,21 @@ router.get("/write", isAuthenticated, (req, res) => {
 // 게시글 작성
 router.post("/create", isAuthenticated, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, tags } = req.body; // tags 추가
     const user = await userService.getUserById(req.user.id);
-    await postService.createPost(req.user.id, title, content, user.location);
+    const post = await postService.createPost(
+      req.user.id,
+      title,
+      content,
+      user.location
+    );
+
+    if (tags) {
+      const tagNames = tags.split(",").map((tag) => tag.trim()); // 문자열을 배열로 변환
+      const tagRecords = await tagService.findOrCreateTags(tagNames); // 태그 찾기 또는 생성
+      await postService.addTagsToPost(post.id, tagRecords);
+    }
+
     res.redirect("/posts");
   } catch (err) {
     res.status(500).send(err.message);
