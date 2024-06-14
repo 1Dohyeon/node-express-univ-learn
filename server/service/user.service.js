@@ -1,5 +1,10 @@
-const User = require("../models/user.entity");
-const axios = require("axios");
+const {
+  User,
+  Post,
+  Comment,
+  PostTag,
+  sequelize,
+} = require("../models/index.entity");
 
 // 사용자 id를 통해서 기본 정보 가져옴
 exports.getUserById = async (id) => {
@@ -50,9 +55,47 @@ exports.updateUser = async (userId, updateData) => {
   }
 };
 
-// 계정 삭제(탈퇴)
-exports.deletePost = async (uderId) => {
-  return await User.destroy({ where: { id: uderId } });
+exports.deleteUser = async (userId) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const user = await User.findByPk(userId);
+    // 댓글 삭제
+    await Comment.destroy({
+      where: { userId: user.id },
+      transaction,
+    });
+
+    // 게시글에 연결된 댓글 삭제
+    const posts = await Post.findAll({
+      where: { userId: user.id },
+      include: [{ model: Comment }],
+      transaction,
+    });
+
+    for (const post of posts) {
+      await Comment.destroy({
+        where: { postId: post.id },
+        transaction,
+      });
+    }
+
+    // 게시글 삭제
+    await Post.destroy({
+      where: { userId: user.id },
+      transaction,
+    });
+
+    // 사용자 삭제
+    await User.destroy({
+      where: { id: user.id },
+      transaction,
+    });
+
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
 };
 
 exports.getSidoList = async () => {

@@ -5,7 +5,10 @@ const commentService = require("./comment.service");
 exports.getPostsByLocation = async (location) => {
   return await Post.findAll({
     where: { location },
-    include: [{ model: User, attributes: ["nickname"] }],
+    include: [
+      { model: User, attributes: ["id", "nickname"] },
+      { model: Tag, attributes: ["name"], through: { attributes: [] } },
+    ],
     order: [["createdAt", "DESC"]],
   });
 };
@@ -23,7 +26,7 @@ exports.createPost = async (userId, title, content, location) => {
 exports.addTagsToPost = async (postId, tags) => {
   const post = await Post.findByPk(postId);
   if (!post) {
-    throw new Error("Post not found");
+    throw new Error("게시글을 찾을 수 없음");
   }
   await post.setTags(tags);
 };
@@ -32,7 +35,10 @@ exports.addTagsToPost = async (postId, tags) => {
 exports.getPostsByUserId = async (userId) => {
   return await Post.findAll({
     where: { userId },
-    include: [{ model: User, attributes: ["nickname"] }],
+    include: [
+      { model: User, attributes: ["id", "nickname"] },
+      { model: Tag, attributes: ["name"], through: { attributes: [] } },
+    ],
     order: [["createdAt", "DESC"]],
   });
 };

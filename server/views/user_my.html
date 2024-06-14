@@ -55,8 +55,9 @@
           </select>
         </div>
         <br />
-        <button type="submit">Update</button>
+        <button type="submit">업데이트</button>
       </form>
+      <button id="deleteAccount">계정 탈퇴</button>
       <hr />
       <h3>My Posts</h3>
       <div id="posts">
@@ -67,14 +68,24 @@
             <h3>{{ post.title | truncate(20, true, '...') }}</h3>
             <p>{{ post.content | truncate(20, true, '...') }}</p>
             <div class="post-footer">
-              <span>Posted by: {{ post.User.nickname }}</span>
-              <span>Posted on: {{ post.createdAt | timeSince }}</span>
+              <span>
+                <a href="/users/{{ post.User.id }}"
+                  >{{ post.User.nickname }}</a
+                ></span
+              >
+              <span>{{ post.createdAt | timeSince }}</span>
+            </div>
+            <div class="post-tags">
+              <strong>태그:</strong>
+              {% for tag in post.Tags %}
+              <span class="tag">#{{ tag.name }}</span>
+              {% endfor %}
             </div>
           </li>
           {% endfor %}
         </div>
         {% else %}
-        <p>You have not written any posts yet.</p>
+        <p>작성한 게시글이 없습니다.</p>
         {% endif %}
       </div>
     </div>

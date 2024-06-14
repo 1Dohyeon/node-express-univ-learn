@@ -50,18 +50,14 @@ exports.register = async (req, res) => {
 exports.login = async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal Server Error" });
+      return res.status(500).json({ success: false, message: "서버 에러" });
     }
     if (!user) {
       return res.status(401).json({ success: false, message: info.message });
     }
     req.login(user, (err) => {
       if (err) {
-        return res
-          .status(500)
-          .json({ success: false, message: "Internal Server Error" });
+        return res.status(500).json({ success: false, message: "서버 에러" });
       }
       return res.json({ success: true });
     });

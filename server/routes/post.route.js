@@ -44,14 +44,18 @@ router.post("/create", isAuthenticated, async (req, res) => {
 });
 
 // 태그로 게시글 검색
-router.get("/search", isAuthenticated, async (req, res) => {
+router.get("/search", async (req, res) => {
   try {
     const { tag } = req.query;
-    const user = await userService.getUserById(req.user.id);
-    const posts = await postService.getPostsByTagAndLocation(
-      tag,
-      user.location
-    );
+    let location = "서울 중구"; // 기본 위치 설정
+
+    if (req.isAuthenticated && req.isAuthenticated()) {
+      const user = await userService.getUserById(req.user.id);
+      location = user.location;
+    }
+
+    const posts = await postService.getPostsByTagAndLocation(tag, location);
+
     if (posts.length === 0) {
       return res.status(404).json([]);
     }
@@ -124,7 +128,7 @@ router.post("/delete/:id", isAuthenticated, async (req, res) => {
 // 게시글 목록 조회 및 렌더링
 router.get("/", async (req, res) => {
   try {
-    let location = "서울 중구"; // 기본 위치
+    let location = "서울특별시 중구"; // 기본 위치
     if (req.isAuthenticated()) {
       const user = await userService.getUserById(req.user.id);
       location = user.location;

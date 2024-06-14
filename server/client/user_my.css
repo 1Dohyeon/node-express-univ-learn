@@ -44,3 +44,7 @@ input[type="text"] {
 .select_container label {
   font-weight: bold;
 }
+
+#deleteAccount {
+  background-color: red;
+}

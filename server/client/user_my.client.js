@@ -368,4 +368,34 @@ document.addEventListener("DOMContentLoaded", function () {
           alert("Error updating profile");
         });
     });
+
+  const deleteButton = document.getElementById("deleteAccount");
+
+  deleteButton.addEventListener("click", async () => {
+    if (confirm("정말로 계정을 삭제하시겠습니까?")) {
+      const userId = document.getElementById("userForm").dataset.userId;
+      if (!userId) {
+        alert("User ID is undefined");
+        return;
+      }
+      try {
+        const response = await fetch(`/users/${userId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.ok) {
+          alert("계정이 성공적으로 삭제되었습니다.");
+          window.location.href = "/"; // 메인 페이지로 리디렉션
+        } else {
+          const error = await response.json();
+          alert(`계정 삭제 중 오류가 발생했습니다: ${error.message}`);
+        }
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        alert("계정 삭제 중 오류가 발생했습니다.");
+      }
+    }
+  });
 });

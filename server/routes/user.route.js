@@ -37,6 +37,22 @@ router.put("/my", isAuthenticated, async (req, res) => {
   }
 });
 
+// 사용자 삭제
+router.delete("/:id", isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      throw new Error("사용자 id를 찾을 수 없습니다.");
+    }
+    await userService.deleteUser(userId);
+    req.logout(); // 사용자 로그아웃 처리
+    res.status(200).json({ message: "계정이 삭제되었습니다." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 시/도 목록 제공
 router.get("/api/sido", async (req, res) => {
   try {
