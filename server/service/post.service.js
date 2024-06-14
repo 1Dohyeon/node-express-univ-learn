@@ -49,6 +49,22 @@ exports.getPostById = async (postId) => {
   return { post, comments };
 };
 
+// 태그와 위치로 게시글 검색
+exports.getPostsByTagAndLocation = async (tagName, location) => {
+  const tag = await Tag.findOne({ where: { name: tagName } });
+  if (!tag) {
+    throw new Error(`Tag '${tagName}' not found`);
+  }
+
+  return await Post.findAll({
+    where: { location },
+    include: [
+      { model: User, attributes: ["nickname"] },
+      { model: Tag, where: { name: tagName }, attributes: ["name"] },
+    ],
+  });
+};
+
 // 게시글 업데이트
 exports.updatePost = async (postId, title, content) => {
   return await Post.update({ title, content }, { where: { id: postId } });

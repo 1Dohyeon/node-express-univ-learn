@@ -1,3 +1,4 @@
+// post.route.js
 const express = require("express");
 const router = express.Router();
 const postService = require("../service/post.service");
@@ -21,7 +22,7 @@ router.get("/write", isAuthenticated, (req, res) => {
 // 게시글 작성
 router.post("/create", isAuthenticated, async (req, res) => {
   try {
-    const { title, content, tags } = req.body; // tags 추가
+    const { title, content, tags } = req.body;
     const user = await userService.getUserById(req.user.id);
     const post = await postService.createPost(
       req.user.id,
@@ -31,14 +32,36 @@ router.post("/create", isAuthenticated, async (req, res) => {
     );
 
     if (tags) {
-      const tagNames = tags.split(",").map((tag) => tag.trim()); // 문자열을 배열로 변환
-      const tagRecords = await tagService.findOrCreateTags(tagNames); // 태그 찾기 또는 생성
+      const tagNames = tags.split(",").map((tag) => tag.trim());
+      const tagRecords = await tagService.findOrCreateTags(tagNames);
       await postService.addTagsToPost(post.id, tagRecords);
     }
 
     res.redirect("/posts");
   } catch (err) {
     res.status(500).send(err.message);
+  }
+});
+
+// 태그로 게시글 검색
+router.get("/search", isAuthenticated, async (req, res) => {
+  try {
+    const { tag } = req.query;
+    const user = await userService.getUserById(req.user.id);
+    const posts = await postService.getPostsByTagAndLocation(
+      tag,
+      user.location
+    );
+    if (posts.length === 0) {
+      return res.status(404).json([]);
+    }
+    res.json(posts);
+  } catch (err) {
+    if (err.message.includes("Tag")) {
+      res.status(404).json([]);
+    } else {
+      res.status(500).json({ message: "태그 검색 중 오류가 발생했습니다." });
+    }
   }
 });
 
@@ -61,7 +84,7 @@ router.get("/edit/:id", isAuthenticated, async (req, res) => {
 // 게시글 수정
 router.post("/edit/:id", isAuthenticated, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, tags } = req.body;
     const { post } = await postService.getPostById(req.params.id);
     if (!post) {
       return res.redirect(`/posts/${req.params.id}`);
@@ -70,6 +93,11 @@ router.post("/edit/:id", isAuthenticated, async (req, res) => {
       return res.redirect(`/posts/${req.params.id}`);
     }
     await postService.updatePost(req.params.id, title, content);
+    if (tags) {
+      const tagNames = tags.split(",").map((tag) => tag.trim());
+      const tagRecords = await tagService.findOrCreateTags(tagNames);
+      await postService.addTagsToPost(post.id, tagRecords);
+    }
     res.redirect(`/posts/${req.params.id}`);
   } catch (err) {
     res.status(500).send(err.message);

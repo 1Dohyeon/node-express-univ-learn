@@ -18,6 +18,21 @@
         <h3>서울 중구</h3>
         {% endif %}
       </div>
+
+      <!-- 태그 검색 폼 추가 -->
+      <div class="search-container">
+        <form id="searchForm" action="/posts/search" method="get">
+          <input
+            type="text"
+            id="searchTag"
+            name="tag"
+            placeholder="Search by tag..."
+            class="searchTag"
+          />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
       <div id="posts">
         {% if posts.length > 0 %}
         <ul>
